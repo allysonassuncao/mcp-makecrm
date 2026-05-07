@@ -9,8 +9,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev:mcp": "tsx src/index.ts",
-    "dev:vercel": "vercel dev",
+    "dev:mcp": "tsx index.ts",
+    "dev:vercel": "rm -rf build && vercel dev",
     "lint": "eslint src/**/*.ts",
     "prepare": "npm run build",
     "vercel-build": "npm run build"

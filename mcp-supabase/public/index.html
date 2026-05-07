@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase MCP Server</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            border: 1px solid #333;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #111, #000);
+        }
+        h1 { color: #3ecf8e; margin-bottom: 0.5rem; }
+        p { color: #888; line-height: 1.6; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+        .endpoint {
+            font-family: monospace;
+            background: #1a1a1a;
+            padding: 8px;
+            border-radius: 4px;
+            color: #3ecf8e;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Supabase MCP Server</h1>
+        <p>Servidor Model Context Protocol para integração com Supabase Edge Functions e RPCs.</p>
+        <div class="badge">Status: Online</div>
+        <p>Endpoint MCP para Postman / Clientes HTTP:</p>
+        <div class="endpoint">/api/mcp</div>
+    </div>
+</body>
+</html>

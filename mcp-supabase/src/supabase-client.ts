@@ -1,116 +1,67 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import dotenv from "dotenv";
 
-// ============================================================
-// SUPABASE CLIENT — usa service_role_key para acesso total
-// ============================================================
+dotenv.config();
 
-let _client: SupabaseClient | null = null;
+const supabaseUrl = process.env.SUPABASE_URL || "";
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+/**
+ * Cliente Singleton (Fallback para Stdio / Env)
+ */
+let instance: SupabaseClient | null = null;
 
 export function getSupabaseClient(): SupabaseClient {
-  if (_client) return _client;
+  if (!instance) {
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error("SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não configurados no .env");
+    }
+    instance = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { persistSession: false },
+    });
+  }
+  return instance;
+}
 
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !key) {
-    throw new Error(
-      "❌ Variáveis de ambiente ausentes: SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY são obrigatórias."
-    );
+/**
+ * Cria um cliente dinâmico baseado em credenciais externas (Postman / Headers)
+ */
+export function createDynamicSupabaseClient(apiKey: string, authHeader?: string): SupabaseClient {
+  if (!supabaseUrl) {
+    throw new Error("SUPABASE_URL não configurada no servidor.");
   }
 
-  _client = createClient(url, key, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
+  return createClient(supabaseUrl, apiKey, {
+    auth: { persistSession: false },
+    global: {
+      headers: authHeader ? { Authorization: authHeader } : undefined,
     },
   });
-
-  return _client;
 }
 
-// ============================================================
-// INVOCAR EDGE FUNCTION
-// ============================================================
-export async function invokeEdgeFunction<T = unknown>(
-  functionName: string,
-  payload: Record<string, unknown>
-): Promise<T> {
-  const supabase = getSupabaseClient();
-
-  const { data, error } = await supabase.functions.invoke<T>(functionName, {
-    body: payload,
-  });
-
-  if (error) {
-    throw new Error(
-      `Edge function "${functionName}" falhou: ${error.message}`
-    );
-  }
-
-  return data as T;
-}
-
-// ============================================================
-// CHAMAR FUNÇÃO RPC
-// ============================================================
-export async function callRpc<T = unknown>(
-  rpcName: string,
-  params: Record<string, unknown>
-): Promise<T> {
-  const supabase = getSupabaseClient();
-
-  const { data, error } = await supabase.rpc(rpcName, params);
-
-  if (error) {
-    throw new Error(`RPC "${rpcName}" falhou: ${error.message}`);
-  }
-
-  return data as T;
-}
-
-// ============================================================
-// CONSULTAR TABELA DIRETAMENTE (SELECT + filtro company_id)
-// ============================================================
-export interface QueryTableOptions {
-  columns?: string;   // ex: "id, name, email" — padrão: "*"
-  limit?: number;     // padrão: 100
-  offset?: number;    // padrão: 0
-  orderBy?: string;   // ex: "created_at"
-  ascending?: boolean;
-}
-
-export async function queryTable<T = unknown>(
+/**
+ * Helper genérico para query (Aceita um cliente específico)
+ */
+export async function queryTable(
+  supabase: SupabaseClient,
   tableName: string,
   companyId: string,
-  options: QueryTableOptions = {}
-): Promise<T[]> {
-  const supabase = getSupabaseClient();
+  options: {
+    limit?: number;
+    offset?: number;
+    orderBy?: string;
+    ascending?: boolean;
+  } = {}
+) {
+  const { limit = 100, offset = 0, orderBy = "id", ascending = true } = options;
 
-  const {
-    columns = "*",
-    limit = 100,
-    offset = 0,
-    orderBy,
-    ascending = true,
-  } = options;
-
-  let query = supabase
+  const { data, error } = await supabase
     .from(tableName)
-    .select(columns)
+    .select("*")
     .eq("company_id", companyId)
+    .order(orderBy, { ascending })
     .range(offset, offset + limit - 1);
 
-  if (orderBy) {
-    query = query.order(orderBy, { ascending });
-  }
-
-  const { data, error } = await query;
-
-  if (error) {
-    throw new Error(
-      `Consulta na tabela "${tableName}" falhou: ${error.message}`
-    );
-  }
-
-  return (data ?? []) as T[];
+  if (error) throw error;
+  return data;
 }

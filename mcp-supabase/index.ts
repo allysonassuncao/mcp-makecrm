@@ -6,10 +6,10 @@ config({ path: ".env.local" }); // Sobreescreve com .env.local se existir
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { getSupabaseClient } from "./supabase-client.js";
-import { registerEdgeFunctionTools } from "./tools/edge-functions.js";
-import { registerRpcTools } from "./tools/rpc.js";
-import { registerTableTools } from "./tools/tables.js";
+import { getSupabaseClient } from "./src/supabase-client.js";
+import { registerEdgeFunctionTools } from "./src/tools/edge-functions.js";
+import { registerRpcTools } from "./src/tools/rpc.js";
+import { registerTableTools } from "./src/tools/tables.js";
 
 async function main() {
   try {
@@ -58,11 +58,13 @@ async function main() {
 
     // Registra todos os tools
     console.error("🛠️  Registrando tools...");
-    registerEdgeFunctionTools(server);
+    const supabase = getSupabaseClient();
+    
+    registerEdgeFunctionTools(server, supabase);
     console.error("   ✅ Edge Function tools registradas");
-    registerRpcTools(server);
+    registerRpcTools(server, supabase);
     console.error("   ✅ RPC tools registradas");
-    registerTableTools(server);
+    registerTableTools(server, supabase);
     console.error("   ✅ Table query tools registradas");
 
     // Tool de health check

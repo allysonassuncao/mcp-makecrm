@@ -4,3 +4,9 @@ build/
 .env.local
 .DS_Store
 *.js.map
+*.d.ts
+*.d.ts.map
+# Evitar conflitos na pasta api quando o tsc roda localmente
+api/*.js
+api/*.d.ts
+api/*.map

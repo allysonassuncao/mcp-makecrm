@@ -6,10 +6,20 @@ import { registerRpcTools } from "../src/tools/rpc.js";
 import { registerTableTools } from "../src/tools/tables.js";
 
 const handler = async (req: Request) => {
+  const allowedOrigins = [
+    "http://localhost:8080",
+    "https://usermakecrm.com.br",
+    "https://app.usermakecrm.com.br",
+  ];
+
+  const origin = req.headers.get("origin");
+  const corsOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[1];
+
   const corsHeaders: Record<string, string> = {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": corsOrigin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey, x-client-info, Accept",
+    "Vary": "Origin",
   };
 
   if (req.method === "OPTIONS") {

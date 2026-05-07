@@ -1,14 +1,15 @@
 import { z } from "zod";
 
 // ============================================================
-// SHARED BASE SCHEMA — user_id e company_id são OBRIGATÓRIOS
-// em TODOS os tools deste MCP.
+// SHARED BASE SCHEMA — company_id é OBRIGATÓRIO.
+// user_id é OPCIONAL (UUID válido se informado).
 // ============================================================
 export const BaseSchema = z.object({
   user_id: z
     .string()
     .uuid("user_id deve ser um UUID válido")
-    .describe("UUID do usuário autenticado (obrigatório em todas as operações)"),
+    .optional()
+    .describe("UUID do usuário autenticado (opcional)"),
   company_id: z
     .string()
     .uuid("company_id deve ser um UUID válido")
@@ -16,11 +17,12 @@ export const BaseSchema = z.object({
 });
 
 // ============================================================
-// UTILITY: valida user_id e company_id e retorna erro padronizado
+// UTILITY: valida company_id (obrigatório) e user_id (opcional)
+// e retorna erro padronizado.
 // Use esta função no início de cada tool handler.
 // ============================================================
 export function validateBaseParams(params: {
-  user_id: string;
+  user_id?: string;
   company_id: string;
 }): { valid: true } | { valid: false; error: object } {
   const result = BaseSchema.safeParse(params);

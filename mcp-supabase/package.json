@@ -1,0 +1,46 @@
+{
+  "name": "mcp-supabase",
+  "version": "1.0.0",
+  "description": "Model Context Protocol server for Supabase integration (Edge Functions & RPC)",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "mcp-supabase": "build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev:mcp": "tsx src/index.ts",
+    "dev:vercel": "vercel dev",
+    "lint": "eslint src/**/*.ts",
+    "prepare": "npm run build",
+    "vercel-build": "npm run build"
+  },
+  "author": "MCP Supabase",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "supabase",
+    "edge-functions",
+    "rpc"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@supabase/supabase-js": "^2.50.0",
+    "@vercel/mcp-adapter": "^0.11.2",
+    "dotenv": "^17.2.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.28",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
+    "eslint": "^9.39.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vercel": "^53.1.1"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

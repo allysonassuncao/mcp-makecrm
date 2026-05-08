@@ -436,3 +436,111 @@ export const ListPipelineDealMeetNoshowSchema = BaseSchema.extend({
     .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
   meet_id: z.string().uuid().optional().describe("Filtrar por meet_id específico"),
 });
+
+// -------------------------------------------------------
+// TABLE: public.pipeline_deal_utms
+// Colunas: id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at
+// -------------------------------------------------------
+export interface PipelineDealUtmRow {
+  id: number;
+  company_id: string | null;
+  deal_id: string | null;
+  utm_id: string | null;
+  utm_term: string | null;
+  utm_medium: string | null;
+  utm_source: string | null;
+  utm_content: string | null;
+  utm_campaign: string | null;
+  created_at: string;
+}
+
+export const ListPipelineDealUtmsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["id", "created_at", "utm_source", "utm_medium", "utm_campaign"])
+    .default("created_at")
+    .describe("Campo para ordenação. Opções: id, created_at, utm_source, utm_medium, utm_campaign"),
+  ascending: z
+    .boolean()
+    .default(false)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  deal_id: z.string().uuid().optional().describe("Filtrar por deal_id específico"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.pipeline_deal_quotes
+// Colunas: id, deal_id, product_id, quoted_price, closed_price, user_id, created_at, updated_at, currency
+// -------------------------------------------------------
+export interface PipelineDealQuoteRow {
+  id: string;
+  deal_id: string | null;
+  product_id: string | null;
+  quoted_price: number | null;
+  closed_price: number | null;
+  user_id: string | null;
+  created_at: string;
+  updated_at: string | null;
+  currency: number;
+}
+
+export const ListPipelineDealQuotesSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["created_at", "updated_at", "quoted_price", "closed_price"])
+    .default("created_at")
+    .describe("Campo para ordenação. Opções: created_at, updated_at, quoted_price, closed_price"),
+  ascending: z
+    .boolean()
+    .default(false)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  deal_id: z.string().uuid().optional().describe("Filtrar por deal_id específico"),
+  user_id_filter: z.string().uuid().optional().describe("Filtrar por user_id (vendedor) específico"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.pipeline_deal_quote_payments
+// Colunas: id, quote_id, value, created_at, currency
+// -------------------------------------------------------
+export interface PipelineDealQuotePaymentRow {
+  id: string;
+  quote_id: string;
+  value: number;
+  created_at: string;
+  currency: number;
+}
+
+export const ListPipelineDealQuotePaymentsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["created_at", "value"])
+    .default("created_at")
+    .describe("Campo para ordenação. Opções: created_at, value"),
+  ascending: z
+    .boolean()
+    .default(false)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  quote_id: z.string().uuid().optional().describe("Filtrar por quote_id específico"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.currencys
+// Colunas: id, code, symbol, name
+// -------------------------------------------------------
+export interface CurrencyRow {
+  id: number;
+  code: string;
+  symbol: string;
+  name: string;
+}
+
+export const ListCurrencysSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["id", "code", "name"])
+    .default("code")
+    .describe("Campo para ordenação. Opções: id, code, name"),
+  ascending: z
+    .boolean()
+    .default(true)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+});

@@ -12,6 +12,10 @@ import {
   ListPipelineDealMeetsSchema,
   ListPipelineDealLostsSchema,
   ListPipelineDealMeetNoshowSchema,
+  ListPipelineDealUtmsSchema,
+  ListPipelineDealQuotesSchema,
+  ListPipelineDealQuotePaymentsSchema,
+  ListCurrencysSchema,
 } from "../types/schemas.js";
 
 export function registerTableTools(server: McpServer, supabase: SupabaseClient) {
@@ -326,6 +330,131 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
           .range(offset, offset + limit - 1);
 
         if (meet_id !== undefined) query = query.eq("meet_id", meet_id);
+
+        const { data, error } = await query;
+        if (error) throw new Error(error.message);
+
+        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
+  // TOOL: list_pipeline_deal_utms
+  // ----------------------------------------------------------
+  server.tool(
+    "list_pipeline_deal_utms",
+    "Lista os UTMs dos negócios (public.pipeline_deal_utms).",
+    ListPipelineDealUtmsSchema.shape,
+    async (params) => {
+      const validation = validateBaseParams(params);
+      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+
+      try {
+        const { limit, offset, order_by, ascending, deal_id } = params;
+        let query = supabase
+          .from("pipeline_deal_utms")
+          .select("id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at")
+          .eq("company_id", params.company_id)
+          .order(order_by, { ascending })
+          .range(offset, offset + limit - 1);
+
+        if (deal_id !== undefined) query = query.eq("deal_id", deal_id);
+
+        const { data, error } = await query;
+        if (error) throw new Error(error.message);
+
+        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
+  // TOOL: list_pipeline_deal_quotes
+  // ----------------------------------------------------------
+  server.tool(
+    "list_pipeline_deal_quotes",
+    "Lista as cotações dos negócios (public.pipeline_deal_quotes).",
+    ListPipelineDealQuotesSchema.shape,
+    async (params) => {
+      const validation = validateBaseParams(params);
+      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+
+      try {
+        const { limit, offset, order_by, ascending, deal_id, user_id_filter } = params;
+        // pipeline_deal_quotes não possui company_id direto (apenas via deal_id)
+        let query = supabase
+          .from("pipeline_deal_quotes")
+          .select("id, deal_id, product_id, quoted_price, closed_price, user_id, created_at, updated_at, currency")
+          .order(order_by, { ascending })
+          .range(offset, offset + limit - 1);
+
+        if (deal_id !== undefined) query = query.eq("deal_id", deal_id);
+        if (user_id_filter !== undefined) query = query.eq("user_id", user_id_filter);
+
+        const { data, error } = await query;
+        if (error) throw new Error(error.message);
+
+        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
+  // TOOL: list_pipeline_deal_quote_payments
+  // ----------------------------------------------------------
+  server.tool(
+    "list_pipeline_deal_quote_payments",
+    "Lista os pagamentos das cotações (public.pipeline_deal_quote_payments).",
+    ListPipelineDealQuotePaymentsSchema.shape,
+    async (params) => {
+      const validation = validateBaseParams(params);
+      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+
+      try {
+        const { limit, offset, order_by, ascending, quote_id } = params;
+        let query = supabase
+          .from("pipeline_deal_quote_payments")
+          .select("id, quote_id, value, created_at, currency")
+          .order(order_by, { ascending })
+          .range(offset, offset + limit - 1);
+
+        if (quote_id !== undefined) query = query.eq("quote_id", quote_id);
+
+        const { data, error } = await query;
+        if (error) throw new Error(error.message);
+
+        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
+  // TOOL: list_currencys
+  // ----------------------------------------------------------
+  server.tool(
+    "list_currencys",
+    "Lista as moedas (public.currencys).",
+    ListCurrencysSchema.shape,
+    async (params) => {
+      const validation = validateBaseParams(params);
+      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+
+      try {
+        const { limit, offset, order_by, ascending } = params;
+        let query = supabase
+          .from("currencys")
+          .select("id, code, symbol, name")
+          .order(order_by, { ascending })
+          .range(offset, offset + limit - 1);
 
         const { data, error } = await query;
         if (error) throw new Error(error.message);

@@ -191,6 +191,45 @@ Consulta `public.pipeline_deal_meet_noshow` (No-shows em agendamentos).
 *   **Retorno:**
     Array com: `id, meet_id, user_id, reason_id, description, created_at`
 
+#### `list_pipeline_deal_utms`
+Consulta `public.pipeline_deal_utms` (UTMs dos negócios) com filtro rígido por `company_id`.
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"id" | "created_at" | "utm_source" | "utm_medium" | "utm_campaign"` (Padrão: `"created_at"`)
+    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
+    *   `deal_id` (UUID): *Opcional*. Filtra por negócio específico.
+*   **Retorno:**
+    Array com: `id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at`
+
+#### `list_pipeline_deal_quotes`
+Consulta `public.pipeline_deal_quotes` (Cotações dos negócios).
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"created_at" | "updated_at" | "quoted_price" | "closed_price"` (Padrão: `"created_at"`)
+    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
+    *   `deal_id` (UUID): *Opcional*. Filtra por negócio específico.
+    *   `user_id_filter` (UUID): *Opcional*. Filtra por vendedor específico.
+*   **Retorno:**
+    Array com: `id, deal_id, product_id, quoted_price, closed_price, user_id, created_at, updated_at, currency`
+
+#### `list_pipeline_deal_quote_payments`
+Consulta `public.pipeline_deal_quote_payments` (Pagamentos das cotações).
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"created_at" | "value"` (Padrão: `"created_at"`)
+    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
+    *   `quote_id` (UUID): *Opcional*. Filtra por cotação específica.
+*   **Retorno:**
+    Array com: `id, quote_id, value, created_at, currency`
+
+#### `list_currencys`
+Consulta `public.currencys` (Moedas).
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"id" | "code" | "name"` (Padrão: `"code"`)
+*   **Retorno:**
+    Array com: `id, code, symbol, name`
+
 ---
 
 ## 5. Exemplo de Implementação (JavaScript / Node.js)

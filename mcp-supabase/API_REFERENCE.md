@@ -85,6 +85,63 @@ Executa a procedure `public.get_won_deals_reports_summary_v3` para consolidar os
     ]
     ```
 
+#### `get_won_deals_reports_graphic`
+Executa a procedure `public.get_won_deals_reports_graphic_v3` para obter dados de distribuição (fontes, campanhas, produtos).
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `user_id` (String/UUID) - **Obrigatório**
+    *   `start_date` (String/YYYY-MM-DD) - *Opcional*.
+    *   `end_date` (String/YYYY-MM-DD) - *Opcional*.
+*   **Retorno:**
+    ```json
+    {
+      "sources": [{ "label": "Indicação", "value": 2 }, { "label": "Tráfego Pago", "value": 9 }, ...],
+      "campaigns": [{ "label": "MAVI", "value": 2 }, ...],
+      "products": [{ "label": "MAVI I.A", "value": 3 }, ...]
+    }
+    ```
+
+#### `get_lost_deals_reports_summary`
+Executa a procedure `public.get_lost_deals_reports_summary` para consolidar os resultados de perdas.
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `user_id` (String/UUID) - **Obrigatório**
+    *   `date_start` (String/ISO8601) - *Opcional*. Ex: `"2024-01-01T00:00:00Z"`
+    *   `date_end` (String/ISO8601) - *Opcional*. Ex: `"2024-12-31T23:59:59Z"`
+*   **Retorno:**
+    ```json
+    [
+      {
+        "total_deals": 996,
+        "total_lost": 1174,
+        "total_won": 14,
+        "avg_days_to_loss": "79.89",
+        "total_revenue_lost": "699650",
+        "total_revenue_forecast": "15450",
+        "total_revenue_won": "66000"
+      }
+    ]
+    ```
+
+#### `get_lost_deals_reports_graphic`
+Executa a procedure `public.get_lost_deals_reports_graphic` para obter dados de distribuição de perdas (fontes, campanhas, motivos).
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `user_id` (String/UUID) - **Obrigatório**
+    *   `start_date` (String/ISO8601) - *Opcional*.
+    *   `end_date` (String/ISO8601) - *Opcional*.
+*   **Retorno:**
+    ```json
+    {
+      "sources": [{ "label": "Tráfego Pago", "value": 1001 }, ...],
+      "campaigns": [{ "label": "MAVI", "value": 193 }, ...],
+      "reasons": [{ "label": "Tentativas de contato/sem retorno", "value": 639 }, ...]
+    }
+    ```
+
 ---
 
 ### 4.3. Consultas em Tabelas (Table Queries)

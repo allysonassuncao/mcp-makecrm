@@ -98,6 +98,79 @@ export interface WonDealsSummaryRow {
   total_revenue_lost: string;
 }
 
+// -------------------------------------------------------
+// RPC: public.get_lost_deals_reports_summary
+// Retorna o resumo de negócios perdidos da empresa.
+// -------------------------------------------------------
+export const GetLostDealsSummarySchema = BaseSchema.extend({
+  date_start: z
+    .string()
+    .datetime({ offset: true })
+    .optional()
+    .describe(
+      "Data de início do filtro (ISO 8601 com timezone, ex: 2024-01-01T00:00:00-03:00). Opcional."
+    ),
+  date_end: z
+    .string()
+    .datetime({ offset: true })
+    .optional()
+    .describe(
+      "Data de fim do filtro (ISO 8601 com timezone, ex: 2024-12-31T23:59:59-03:00). Opcional."
+    ),
+});
+
+export interface LostDealsSummaryRow {
+  total_deals: number;
+  total_lost: number;
+  total_won: number;
+  avg_days_to_loss: string;
+  total_revenue_lost: string;
+  total_revenue_forecast: string;
+  total_revenue_won: string;
+}
+
+// -------------------------------------------------------
+// RPC: public.get_won_deals_reports_graphic_v3
+// Retorna dados para gráficos de negócios ganhos (fontes, campanhas, produtos).
+// -------------------------------------------------------
+export const GetWonDealsGraphicSchema = BaseSchema.extend({
+  start_date: z
+    .string()
+    .describe("Data de início do filtro (YYYY-MM-DD). Opcional.")
+    .optional(),
+  end_date: z
+    .string()
+    .describe("Data de fim do filtro (YYYY-MM-DD). Opcional.")
+    .optional(),
+});
+
+export interface WonDealsGraphicRow {
+  sources: { label: string; value: number }[];
+  campaigns: { label: string; value: number }[];
+  products: { label: string; value: number }[];
+}
+
+// -------------------------------------------------------
+// RPC: public.get_lost_deals_reports_graphic
+// Retorna dados para gráficos de negócios perdidos (fontes, campanhas, motivos).
+// -------------------------------------------------------
+export const GetLostDealsGraphicSchema = BaseSchema.extend({
+  start_date: z
+    .string()
+    .describe("Data de início do filtro (ISO 8601 ou YYYY-MM-DD). Opcional.")
+    .optional(),
+  end_date: z
+    .string()
+    .describe("Data de fim do filtro (ISO 8601 ou YYYY-MM-DD). Opcional.")
+    .optional(),
+});
+
+export interface LostDealsGraphicRow {
+  sources: { label: string; value: number }[];
+  campaigns: { label: string; value: number }[];
+  reasons: { label: string; value: number }[];
+}
+
 // ============================================================
 // TIPOS UTILITÁRIOS
 // ============================================================

@@ -131,6 +131,66 @@ Consulta `public.sources` (Origens) com filtro rígido por `company_id`. *(Nota:
 *   **Retorno:**
     Array com: `id, name, status, company_id`
 
+#### `list_roles`
+Consulta `public.roles`. *(Nota: Tabela sem coluna created_at e company_id)*
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"id" | "name" | "status"` (Padrão: `"name"`)
+    *   `status_filter` (Boolean): *Opcional*. `true` para ativas, `false` para inativas.
+*   **Retorno:**
+    Array com: `id, name, status`
+
+#### `list_lost_reasons`
+Consulta `public.lost_reasons` (Motivos de perda) com filtro rígido por `company_id`.
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"name" | "created_at" | "status"` (Padrão: `"name"`)
+    *   `status_filter` (Boolean): *Opcional*. `true` para ativas, `false` para inativas.
+*   **Retorno:**
+    Array com: `id, company_id, name, status, created_at`
+
+#### `list_noshow_reasons`
+Consulta `public.noshow_reasons` (Motivos de no-show) com filtro rígido por `company_id`.
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"name" | "created_at" | "status"` (Padrão: `"name"`)
+    *   `status_filter` (Boolean): *Opcional*. `true` para ativas, `false` para inativas.
+*   **Retorno:**
+    Array com: `id, company_id, name, status, created_at`
+
+#### `list_pipeline_deal_meets`
+Consulta `public.pipeline_deal_meets` (Agendamentos).
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"title" | "created_at" | "start" | "end" | "status"` (Padrão: `"created_at"`)
+    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
+    *   `status_filter` (Boolean): *Opcional*. `true` para ativas, `false` para inativas.
+    *   `deal_id` (UUID): *Opcional*. Filtra por negócio específico.
+    *   `user_id_filter` (UUID): *Opcional*. Filtra por responsável específico.
+*   **Retorno:**
+    Array com: `id, bot_id, deal_id, user_id, type, title, event_id, created_at, start, end, status, attendees, link, description`
+
+#### `list_pipeline_deal_losts`
+Consulta `public.pipeline_deal_losts` (Negócios perdidos).
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"id" | "created_at"` (Padrão: `"created_at"`)
+    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
+    *   `deal_id` (UUID): *Opcional*. Filtra por negócio específico.
+    *   `reason_id` (UUID): *Opcional*. Filtra por motivo de perda.
+*   **Retorno:**
+    Array com: `id, deal_id, reason_id, description, created_at`
+
+#### `list_pipeline_deal_meet_noshow`
+Consulta `public.pipeline_deal_meet_noshow` (No-shows em agendamentos).
+
+*   **Parâmetros Específicos:**
+    *   `order_by` (Enum): `"id" | "created_at"` (Padrão: `"created_at"`)
+    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
+    *   `meet_id` (UUID): *Opcional*. Filtra por agendamento específico.
+*   **Retorno:**
+    Array com: `id, meet_id, user_id, reason_id, description, created_at`
+
 ---
 
 ## 5. Exemplo de Implementação (JavaScript / Node.js)

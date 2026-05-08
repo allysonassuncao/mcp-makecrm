@@ -261,3 +261,178 @@ export const ListCampaignsSchema = BaseSchema.extend({
     .describe("Filtrar por status: true = ativas, false = inativas. Omitir para retornar todas"),
 });
 
+// -------------------------------------------------------
+// TABLE: public.roles
+// Colunas: id, name, status
+// Nota: roles NÃO tem company_id, mas a query vai considerar apenas isso no db?
+// Ops, base schema requer company_id. Se for um cadastro global, não envia company_id?
+// Pelo BaseSchema, company_id é obrigatório.
+// -------------------------------------------------------
+export interface RoleRow {
+  id: number;
+  name: string | null;
+  status: boolean | null;
+}
+
+export const ListRolesSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["id", "name", "status"])
+    .default("name")
+    .describe("Campo para ordenação. Opções: id, name, status"),
+  ascending: z
+    .boolean()
+    .default(true)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  status_filter: z
+    .boolean()
+    .optional()
+    .describe("Filtrar por status: true = ativas, false = inativas. Omitir para retornar todas"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.lost_reasons
+// Colunas: id, company_id, name, status, created_at
+// -------------------------------------------------------
+export interface LostReasonRow {
+  id: string;
+  company_id: string | null;
+  name: string | null;
+  status: boolean | null;
+  created_at: string;
+}
+
+export const ListLostReasonsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["name", "created_at", "status"])
+    .default("name")
+    .describe("Campo para ordenação. Opções: name, created_at, status"),
+  ascending: z
+    .boolean()
+    .default(true)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  status_filter: z
+    .boolean()
+    .optional()
+    .describe("Filtrar por status: true = ativas, false = inativas. Omitir para retornar todas"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.noshow_reasons
+// Colunas: id, company_id, name, status, created_at
+// -------------------------------------------------------
+export interface NoshowReasonRow {
+  id: string;
+  company_id: string;
+  name: string;
+  status: boolean;
+  created_at: string;
+}
+
+export const ListNoshowReasonsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["name", "created_at", "status"])
+    .default("name")
+    .describe("Campo para ordenação. Opções: name, created_at, status"),
+  ascending: z
+    .boolean()
+    .default(true)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  status_filter: z
+    .boolean()
+    .optional()
+    .describe("Filtrar por status: true = ativas, false = inativas. Omitir para retornar todas"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.pipeline_deal_meets
+// Colunas: id, bot_id, deal_id, user_id, type, title, event_id, created_at, start, end, status, attendees, link, description
+// -------------------------------------------------------
+export interface PipelineDealMeetRow {
+  id: string;
+  bot_id: string | null;
+  deal_id: string | null;
+  user_id: string | null;
+  type: string | null;
+  title: string | null;
+  event_id: string | null;
+  created_at: string;
+  start: string | null;
+  end: string | null;
+  status: boolean | null;
+  attendees: any[] | null;
+  link: string | null;
+  description: string | null;
+}
+
+export const ListPipelineDealMeetsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["title", "created_at", "start", "end", "status"])
+    .default("created_at")
+    .describe("Campo para ordenação. Opções: title, created_at, start, end, status"),
+  ascending: z
+    .boolean()
+    .default(false)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  status_filter: z
+    .boolean()
+    .optional()
+    .describe("Filtrar por status: true = ativas, false = inativas. Omitir para retornar todas"),
+  deal_id: z.string().uuid().optional().describe("Filtrar por deal_id específico"),
+  user_id_filter: z.string().uuid().optional().describe("Filtrar por user_id específico"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.pipeline_deal_losts
+// Colunas: id, deal_id, reason_id, description, created_at
+// -------------------------------------------------------
+export interface PipelineDealLostRow {
+  id: number;
+  deal_id: string | null;
+  reason_id: string | null;
+  description: string | null;
+  created_at: string;
+}
+
+export const ListPipelineDealLostsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["id", "created_at"])
+    .default("created_at")
+    .describe("Campo para ordenação. Opções: id, created_at"),
+  ascending: z
+    .boolean()
+    .default(false)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  deal_id: z.string().uuid().optional().describe("Filtrar por deal_id específico"),
+  reason_id: z.string().uuid().optional().describe("Filtrar por reason_id específico"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.pipeline_deal_meet_noshow
+// Colunas: id, meet_id, user_id, reason_id, description, created_at
+// -------------------------------------------------------
+export interface PipelineDealMeetNoshowRow {
+  id: number;
+  meet_id: string;
+  user_id: string;
+  reason_id: string;
+  description: string | null;
+  created_at: string;
+}
+
+export const ListPipelineDealMeetNoshowSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["id", "created_at"])
+    .default("created_at")
+    .describe("Campo para ordenação. Opções: id, created_at"),
+  ascending: z
+    .boolean()
+    .default(false)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  meet_id: z.string().uuid().optional().describe("Filtrar por meet_id específico"),
+});

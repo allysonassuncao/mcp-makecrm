@@ -171,6 +171,56 @@ export interface LostDealsGraphicRow {
   reasons: { label: string; value: number }[];
 }
 
+// -------------------------------------------------------
+// RPC: public.get_utm_deals_reports_summary
+// Retorna o histórico de UTMs capturados nos negócios.
+// -------------------------------------------------------
+export const GetUtmDealsSummarySchema = BaseSchema.extend({
+  date_start: z
+    .string()
+    .datetime({ offset: true })
+    .describe("Data de início do filtro (ISO 8601)."),
+  date_end: z
+    .string()
+    .datetime({ offset: true })
+    .describe("Data de fim do filtro (ISO 8601)."),
+  page: z
+    .number()
+    .int()
+    .min(1)
+    .default(1)
+    .optional()
+    .describe("Número da página para paginação (padrão: 1)"),
+  limit: z
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .default(10)
+    .optional()
+    .describe("Quantidade de registros por página (padrão: 10, máx: 100)"),
+  deal_id: z.string().uuid().optional().describe("Filtrar por deal_id específico"),
+  utm_id: z.string().optional().describe("Filtrar por utm_id"),
+  utm_term: z.string().optional().describe("Filtrar por utm_term"),
+  utm_medium: z.string().optional().describe("Filtrar por utm_medium"),
+  utm_source: z.string().optional().describe("Filtrar por utm_source"),
+  utm_content: z.string().optional().describe("Filtrar por utm_content"),
+  utm_campaign: z.string().optional().describe("Filtrar por utm_campaign"),
+});
+
+export interface UtmDealsSummaryRow {
+  id: number;
+  company_id: string;
+  deal_id: string;
+  utm_id: string | null;
+  utm_term: string | null;
+  utm_medium: string | null;
+  utm_source: string | null;
+  utm_content: string | null;
+  utm_campaign: string | null;
+  created_at: string;
+}
+
 // ============================================================
 // TIPOS UTILITÁRIOS
 // ============================================================
@@ -510,35 +560,6 @@ export const ListPipelineDealMeetNoshowSchema = BaseSchema.extend({
   meet_id: z.string().uuid().optional().describe("Filtrar por meet_id específico"),
 });
 
-// -------------------------------------------------------
-// TABLE: public.pipeline_deal_utms
-// Colunas: id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at
-// -------------------------------------------------------
-export interface PipelineDealUtmRow {
-  id: number;
-  company_id: string | null;
-  deal_id: string | null;
-  utm_id: string | null;
-  utm_term: string | null;
-  utm_medium: string | null;
-  utm_source: string | null;
-  utm_content: string | null;
-  utm_campaign: string | null;
-  created_at: string;
-}
-
-export const ListPipelineDealUtmsSchema = BaseSchema.extend({
-  ...PaginationSchema,
-  order_by: z
-    .enum(["id", "created_at", "utm_source", "utm_medium", "utm_campaign"])
-    .default("created_at")
-    .describe("Campo para ordenação. Opções: id, created_at, utm_source, utm_medium, utm_campaign"),
-  ascending: z
-    .boolean()
-    .default(false)
-    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
-  deal_id: z.string().uuid().optional().describe("Filtrar por deal_id específico"),
-});
 
 // -------------------------------------------------------
 // TABLE: public.pipeline_deal_quotes

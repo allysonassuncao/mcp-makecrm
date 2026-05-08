@@ -12,7 +12,6 @@ import {
   ListPipelineDealMeetsSchema,
   ListPipelineDealLostsSchema,
   ListPipelineDealMeetNoshowSchema,
-  ListPipelineDealUtmsSchema,
   ListPipelineDealQuotesSchema,
   ListPipelineDealQuotePaymentsSchema,
   ListCurrencysSchema,
@@ -341,37 +340,6 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     }
   );
 
-  // ----------------------------------------------------------
-  // TOOL: list_pipeline_deal_utms
-  // ----------------------------------------------------------
-  server.tool(
-    "list_pipeline_deal_utms",
-    "Lista os UTMs dos negócios (public.pipeline_deal_utms).",
-    ListPipelineDealUtmsSchema.shape,
-    async (params) => {
-      const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
-
-      try {
-        const { limit, offset, order_by, ascending, deal_id } = params;
-        let query = supabase
-          .from("pipeline_deal_utms")
-          .select("id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at")
-          .eq("company_id", params.company_id)
-          .order(order_by, { ascending })
-          .range(offset, offset + limit - 1);
-
-        if (deal_id !== undefined) query = query.eq("deal_id", deal_id);
-
-        const { data, error } = await query;
-        if (error) throw new Error(error.message);
-
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
-      } catch (error) {
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
-      }
-    }
-  );
 
   // ----------------------------------------------------------
   // TOOL: list_pipeline_deal_quotes

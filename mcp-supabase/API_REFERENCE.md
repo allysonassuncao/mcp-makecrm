@@ -142,6 +142,20 @@ Executa a procedure `public.get_lost_deals_reports_graphic` para obter dados de 
     }
     ```
 
+#### `get_utm_deals_reports_summary`
+Executa a procedure `public.get_utm_deals_reports_summary` para listar UTMs capturadas nos negócios com filtros flexíveis.
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `date_start` (String/ISO8601) - **Obrigatório**
+    *   `date_end` (String/ISO8601) - **Obrigatório**
+    *   `page` (Integer) - Padrão: 1
+    *   `limit` (Integer) - Padrão: 10
+    *   `deal_id` (String/UUID) - *Opcional*
+    *   `utm_id`, `utm_term`, `utm_medium`, `utm_source`, `utm_content`, `utm_campaign` (String) - *Opcional*
+*   **Retorno:**
+    Array de objetos com: `id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at`
+
 ---
 
 ### 4.3. Consultas em Tabelas (Table Queries)
@@ -248,15 +262,6 @@ Consulta `public.pipeline_deal_meet_noshow` (No-shows em agendamentos).
 *   **Retorno:**
     Array com: `id, meet_id, user_id, reason_id, description, created_at`
 
-#### `list_pipeline_deal_utms`
-Consulta `public.pipeline_deal_utms` (UTMs dos negócios) com filtro rígido por `company_id`.
-
-*   **Parâmetros Específicos:**
-    *   `order_by` (Enum): `"id" | "created_at" | "utm_source" | "utm_medium" | "utm_campaign"` (Padrão: `"created_at"`)
-    *   `ascending` (Boolean): Ordenação (Padrão: `false`)
-    *   `deal_id` (UUID): *Opcional*. Filtra por negócio específico.
-*   **Retorno:**
-    Array com: `id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at`
 
 #### `list_pipeline_deal_quotes`
 Consulta `public.pipeline_deal_quotes` (Cotações dos negócios).

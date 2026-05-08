@@ -177,20 +177,33 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
 
       try {
-        const { data, error } = await supabase.rpc("get_utm_deals_reports_summary", {
+        const rpcArgs: any = {
           company_id: params.company_id,
           date_start: params.date_start,
           date_end: params.date_end,
-          page: params.page,
-          limit: params.limit,
-          deal_id: params.deal_id,
-          utm_id: params.utm_id,
-          utm_term: params.utm_term,
-          utm_medium: params.utm_medium,
-          utm_source: params.utm_source,
-          utm_content: params.utm_content,
-          utm_campaign: params.utm_campaign,
-        });
+        };
+
+        // Adiciona parâmetros opcionais apenas se não forem vazios/nulos
+        const optionalParams = [
+          "page",
+          "limit",
+          "deal_id",
+          "utm_id",
+          "utm_term",
+          "utm_medium",
+          "utm_source",
+          "utm_content",
+          "utm_campaign",
+        ];
+
+        for (const key of optionalParams) {
+          const val = (params as any)[key];
+          if (val !== undefined && val !== null && val !== "") {
+            rpcArgs[key] = val;
+          }
+        }
+
+        const { data, error } = await supabase.rpc("get_utm_deals_reports_summary", rpcArgs);
 
         if (error) throw new Error(error.message);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };

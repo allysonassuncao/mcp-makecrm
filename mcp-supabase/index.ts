@@ -152,8 +152,10 @@ async function main() {
             // RPCs
             "get_won_deals_reports_summary",
             "get_lost_deals_reports_summary",
+            "get_noshow_deals_reports_summary",
             "get_won_deals_reports_graphic",
             "get_lost_deals_reports_graphic",
+            "get_noshow_deals_reports_graphics",
             "get_utm_deals_reports_summary",
             // Table queries
             "list_users",

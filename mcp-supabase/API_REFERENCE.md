@@ -156,6 +156,45 @@ Executa a procedure `public.get_utm_deals_reports_summary` para listar UTMs capt
 *   **Retorno:**
     Array de objetos com: `id, company_id, deal_id, utm_id, utm_term, utm_medium, utm_source, utm_content, utm_campaign, created_at`
 
+#### `get_noshow_deals_reports_summary`
+Executa a procedure `public.get_noshow_deals_reports_summary` para consolidar os resultados de faltas em reuniões.
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `user_id` (String/UUID) - **Obrigatório**
+    *   `date_start` (String/ISO8601) - *Opcional*.
+    *   `date_end` (String/ISO8601) - *Opcional*.
+*   **Retorno:**
+    ```json
+    [
+      {
+        "total_meetings": 43,
+        "total_noshows": 15,
+        "noshows_by_weekday": [
+          { "day": "segunda-feira", "count": 3 },
+          ...
+        ]
+      }
+    ]
+    ```
+
+#### `get_noshow_deals_reports_graphics`
+Executa a procedure `public.get_noshow_deals_reports_graphics` para obter dados de distribuição de no-shows (fontes, campanhas, motivos).
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `user_id` (String/UUID) - **Obrigatório**
+    *   `start_date` (String/ISO8601) - *Opcional*.
+    *   `end_date` (String/ISO8601) - *Opcional*.
+*   **Retorno:**
+    ```json
+    {
+      "sources": [{ "label": "Orgânico", "value": 2 }, ...],
+      "campaigns": [{ "label": "Callpage", "value": 1 }, ...],
+      "reasons": [{ "label": "Não compareceu", "value": 11 }, ...]
+    }
+    ```
+
 ---
 
 ### 4.3. Consultas em Tabelas (Table Queries)

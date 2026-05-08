@@ -172,6 +172,27 @@ export interface LostDealsGraphicRow {
 }
 
 // -------------------------------------------------------
+// RPC: public.get_noshow_deals_reports_graphics
+// Retorna dados para gráficos de no-shows (fontes, campanhas, motivos).
+// -------------------------------------------------------
+export const GetNoShowDealsGraphicSchema = BaseSchema.extend({
+  start_date: z
+    .string()
+    .describe("Data de início do filtro (ISO 8601 ou YYYY-MM-DD). Opcional.")
+    .optional(),
+  end_date: z
+    .string()
+    .describe("Data de fim do filtro (ISO 8601 ou YYYY-MM-DD). Opcional.")
+    .optional(),
+});
+
+export interface NoShowDealsGraphicRow {
+  sources: { label: string; value: number }[];
+  campaigns: { label: string; value: number }[];
+  reasons: { label: string; value: number }[];
+}
+
+// -------------------------------------------------------
 // RPC: public.get_utm_deals_reports_summary
 // Retorna o histórico de UTMs capturados nos negócios.
 // -------------------------------------------------------
@@ -219,6 +240,33 @@ export interface UtmDealsSummaryRow {
   utm_content: string | null;
   utm_campaign: string | null;
   created_at: string;
+}
+
+// -------------------------------------------------------
+// RPC: public.get_noshow_deals_reports_summary
+// Retorna o resumo de no-shows da empresa.
+// -------------------------------------------------------
+export const GetNoShowDealsSummarySchema = BaseSchema.extend({
+  date_start: z
+    .string()
+    .datetime({ offset: true })
+    .optional()
+    .describe(
+      "Data de início do filtro (ISO 8601 com timezone, ex: 2024-01-01T00:00:00-03:00). Opcional."
+    ),
+  date_end: z
+    .string()
+    .datetime({ offset: true })
+    .optional()
+    .describe(
+      "Data de fim do filtro (ISO 8601 com timezone, ex: 2024-12-31T23:59:59-03:00). Opcional."
+    ),
+});
+
+export interface NoShowDealsSummaryRow {
+  total_meetings: number;
+  total_noshows: number;
+  noshows_by_weekday: { day: string; count: number }[];
 }
 
 // ============================================================

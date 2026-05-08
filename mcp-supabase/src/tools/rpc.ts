@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { validateBaseParams, GetWonDealsSummarySchema, GetWonDealsGraphicSchema, GetLostDealsSummarySchema, GetLostDealsGraphicSchema, GetUtmDealsSummarySchema } from "../types/schemas.js";
+import { validateBaseParams, GetWonDealsSummarySchema, GetWonDealsGraphicSchema, GetLostDealsSummarySchema, GetLostDealsGraphicSchema, GetUtmDealsSummarySchema, GetNoShowDealsSummarySchema, GetNoShowDealsGraphicSchema } from "../types/schemas.js";
 
 export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // ----------------------------------------------------------
@@ -58,6 +58,33 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   );
 
   // ----------------------------------------------------------
+  // RPC: get_noshow_deals_reports_summary
+  // ----------------------------------------------------------
+  server.tool(
+    "get_noshow_deals_reports_summary",
+    "Retorna um resumo de relatórios de no-shows (faltas em reuniões).",
+    GetNoShowDealsSummarySchema.shape,
+    async (params) => {
+      const validation = validateBaseParams(params);
+      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+
+      try {
+        const { data, error } = await supabase.rpc("get_noshow_deals_reports_summary", {
+          company_id: params.company_id,
+          date_start: params.date_start,
+          date_end: params.date_end,
+          user_id: params.user_id,
+        });
+
+        if (error) throw new Error(error.message);
+        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
   // RPC: get_won_deals_reports_graphic
   // ----------------------------------------------------------
   server.tool(
@@ -97,6 +124,33 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
 
       try {
         const { data, error } = await supabase.rpc("get_lost_deals_reports_graphic", {
+          company_id: params.company_id,
+          start_date: params.start_date,
+          end_date: params.end_date,
+          user_id: params.user_id,
+        });
+
+        if (error) throw new Error(error.message);
+        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+      } catch (error) {
+        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
+  // RPC: get_noshow_deals_reports_graphics
+  // ----------------------------------------------------------
+  server.tool(
+    "get_noshow_deals_reports_graphics",
+    "Retorna dados consolidados para gráficos de no-shows (Fontes, Campanhas e Motivos).",
+    GetNoShowDealsGraphicSchema.shape,
+    async (params) => {
+      const validation = validateBaseParams(params);
+      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+
+      try {
+        const { data, error } = await supabase.rpc("get_noshow_deals_reports_graphics", {
           company_id: params.company_id,
           start_date: params.start_date,
           end_date: params.end_date,

@@ -243,6 +243,65 @@ export interface UtmDealsSummaryRow {
 }
 
 // -------------------------------------------------------
+// RPC: public.get_pipeline_deals_search_v2
+// Busca avançada de negócios com múltiplos filtros e paginação.
+// -------------------------------------------------------
+export const GetPipelineDealsSearchV2Schema = BaseSchema.extend({
+  pipeline_id: z.array(z.string().uuid()).optional().describe("IDs dos funis (Array de UUIDs)"),
+  name: z.string().optional().describe("Nome do negócio ou contato para busca textual"),
+  pipeline_stage_id: z.array(z.string().uuid()).optional().describe("IDs das etapas (Array de UUIDs)"),
+  pipeline_deal_id: z.array(z.string().uuid()).optional().describe("IDs dos negócios específicos (Array de UUIDs)"),
+  pipeline_deal_status: z.array(z.number().int()).optional().describe("Status dos negócios (Array de Inteiros)"),
+  pipeline_deal_user_id: z.array(z.string().uuid()).optional().describe("IDs dos responsáveis (Array de UUIDs)"),
+  pipeline_deal_sdr_id: z.array(z.string().uuid()).optional().describe("IDs dos SDRs (Array de UUIDs)"),
+  pipeline_deal_closer_id: z.array(z.string().uuid()).optional().describe("IDs dos Closers (Array de UUIDs)"),
+  pipeline_deal_source_id: z.array(z.string().uuid()).optional().describe("IDs das origens (Array de UUIDs)"),
+  pipeline_deal_campaign_id: z.array(z.string().uuid()).optional().describe("IDs das campanhas (Array de UUIDs)"),
+  pipeline_deal_value_min: z.number().optional().describe("Valor mínimo do negócio"),
+  pipeline_deal_value_max: z.number().optional().describe("Valor máximo do negócio"),
+  pipeline_deal_created_at_start: z
+    .string()
+    .datetime({ offset: true })
+    .optional()
+    .describe("Data inicial de criação (ISO 8601)"),
+  pipeline_deal_created_at_end: z
+    .string()
+    .datetime({ offset: true })
+    .optional()
+    .describe("Data final de criação (ISO 8601)"),
+  pipeline_deal_probability: z.array(z.number().int()).optional().describe("Probabilidades (Array de Inteiros)"),
+  pipeline_deal_products: z.array(z.string().uuid()).optional().describe("IDs dos produtos (Array de UUIDs)"),
+  pipeline_deal_activities: z.array(z.string()).optional().describe("Tipos de atividades (Array de Strings)"),
+  pipeline_deal_utm_source: z.array(z.string()).optional().describe("UTM Source (Array de Strings)"),
+  pipeline_deal_utm_medium: z.array(z.string()).optional().describe("UTM Medium (Array de Strings)"),
+  pipeline_deal_utm_campaign: z.array(z.string()).optional().describe("UTM Campaign (Array de Strings)"),
+  pipeline_deal_utm_id: z.array(z.string()).optional().describe("UTM ID (Array de Strings)"),
+  pipeline_deal_utm_term: z.array(z.string()).optional().describe("UTM Term (Array de Strings)"),
+  pipeline_deal_utm_content: z.array(z.string()).optional().describe("UTM Content (Array de Strings)"),
+  pipeline_deal_custom: z.any().optional().describe("Campos customizados (JSON)"),
+  page: z.number().int().min(1).default(1).optional().describe("Número da página"),
+  limit: z.number().int().min(1).max(100).default(10).optional().describe("Limite de registros por página"),
+  sort_by: z.string().default("updated_at").optional().describe("Campo para ordenação"),
+  sort_order: z
+    .enum(["asc", "desc"])
+    .default("desc")
+    .optional()
+    .describe("Ordem de ordenação (asc/desc)"),
+});
+
+export interface PipelineDealsSearchV2Response {
+  data: any[];
+  page: number;
+  limit: number;
+  total: number;
+  total_pages: number;
+  total_value: number;
+  total_values: { code: string; value: number; symbol: string }[];
+  total_value_quotes: number;
+  total_values_quotes: { code: string; value: number; symbol: string }[];
+}
+
+// -------------------------------------------------------
 // RPC: public.get_noshow_deals_reports_summary
 // Retorna o resumo de no-shows da empresa.
 // -------------------------------------------------------

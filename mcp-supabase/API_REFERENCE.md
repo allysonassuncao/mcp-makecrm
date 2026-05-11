@@ -195,6 +195,26 @@ Executa a procedure `public.get_noshow_deals_reports_graphics` para obter dados 
     }
     ```
 
+#### `get_pipeline_deals_search_v2`
+Executa a procedure `public.get_pipeline_deals_search_v2` para realizar busca avançada de lead ou oportunidades com múltiplos filtros e paginação.
+
+*   **Parâmetros (Arguments):**
+    *   `company_id` (String/UUID) - **Obrigatório**
+    *   `user_id` (String/UUID) - **Obrigatório**
+    *   `pipeline_id` (Array de UUIDs) - *Opcional*
+    *   `name` (String) - *Opcional*. Busca por nome do negócio ou contato.
+    *   `pipeline_stage_id` (Array de UUIDs) - *Opcional*
+    *   `pipeline_deal_status` (Array de Inteiros) - *Opcional*. 1=Aberto, 2=Ganho, 3=Perdido.
+    *   `pipeline_deal_user_id` (Array de UUIDs) - *Opcional*
+    *   `pipeline_deal_value_min`, `pipeline_deal_value_max` (Numeric) - *Opcional*
+    *   `pipeline_deal_created_at_start`, `pipeline_deal_created_at_end` (ISO8601) - *Opcional*
+    *   `page` (Integer) - Padrão: 1
+    *   `limit` (Integer) - Padrão: 10
+    *   `sort_by` (String) - Padrão: `"updated_at"`
+    *   `sort_order` (String) - Padrão: `"desc"`
+*   **Retorno:**
+    Objeto complexo contendo array `data` (leads e oportunidades detalhados) e metadados de paginação/totais: `page, limit, total, total_pages, total_value, total_values, total_value_quotes, total_values_quotes`.
+
 ---
 
 ### 4.3. Consultas em Tabelas (Table Queries)

@@ -157,6 +157,7 @@ async function main() {
             "get_lost_deals_reports_graphic",
             "get_noshow_deals_reports_graphics",
             "get_utm_deals_reports_summary",
+            "get_pipeline_deals_search_v2",
             // Table queries
             "list_users",
             "list_pipelines",

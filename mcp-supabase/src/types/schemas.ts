@@ -248,7 +248,10 @@ export interface UtmDealsSummaryRow {
 // -------------------------------------------------------
 export const GetPipelineDealsSearchV2Schema = BaseSchema.extend({
   pipeline_id: z.array(z.string().uuid()).optional().describe("IDs dos funis (Array de UUIDs)"),
-  name: z.string().optional().describe("Nome do negócio ou contato para busca textual"),
+  name: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .describe("Nome, telefone ou e-mail do lead/oportunidade/negócio/contato para busca textual (pode ser uma string ou array de strings)"),
   pipeline_stage_id: z.array(z.string().uuid()).optional().describe("IDs das etapas (Array de UUIDs)"),
   pipeline_deal_id: z.array(z.string().uuid()).optional().describe("IDs dos negócios específicos (Array de UUIDs)"),
   pipeline_deal_status: z.array(z.number().int()).optional().describe("Status dos negócios (Array de Inteiros)"),

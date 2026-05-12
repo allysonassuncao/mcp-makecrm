@@ -202,7 +202,7 @@ Executa a procedure `public.get_pipeline_deals_search_v2` para realizar busca av
     *   `company_id` (String/UUID) - **Obrigatório**
     *   `user_id` (String/UUID) - **Obrigatório**
     *   `pipeline_id` (Array de UUIDs) - *Opcional*
-    *   `name` (String) - *Opcional*. Busca por nome do negócio ou contato.
+    *   `name` (String ou Array de Strings) - *Opcional*. Busca por nome, telefone ou e-mail do lead/oportunidade/negócio/contato.
     *   `pipeline_stage_id` (Array de UUIDs) - *Opcional*
     *   `pipeline_deal_status` (Array de Inteiros) - *Opcional*. 1=Aberto, 2=Ganho, 3=Perdido.
     *   `pipeline_deal_user_id` (Array de UUIDs) - *Opcional*

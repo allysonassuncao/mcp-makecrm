@@ -147,15 +147,48 @@ async function main() {
           tools_available: [
             // Edge Functions
             "example_edge_function",
-            // RPCs
-            "get_won_deals_reports_summary",
-            "get_lost_deals_reports_summary",
-            "get_noshow_deals_reports_summary",
-            "get_won_deals_reports_graphic",
-            "get_lost_deals_reports_graphic",
-            "get_noshow_deals_reports_graphics",
-            "get_utm_deals_reports_summary",
+            "getContacts",
+            "getDeals",
+            "getMAVIFAQ",
+            
+            // RPCs - Contatos
+            "get_contact_full_context_v2",
+            "get_conversation_and_user_data",
+            "get_conversations_list_v3",
+            "get_inboxes_unread_counts",
+            
+            // RPCs - Pipeline
             "get_pipeline_deals_search_v2",
+            "get_pipeline_deals_page_v7",
+            "get_pipeline_deals_totals_v7",
+            "export_pipeline_deals",
+            
+            // RPCs - Reuniões
+            "get_pipeline_meets_filtered",
+            "get_pipeline_deals_meet_search_v1",
+            "get_inbox_webphone_calls_v4",
+            
+            // RPCs - Relatórios
+            "get_conversation_repports",
+            "reports_revenue_details_v4",
+            "get_won_deals_reports_summary_v4",
+            "get_won_deals_reports_by_user",
+            "get_won_deals_reports_graphic_v3",
+            "get_lost_deals_reports_summary",
+            "get_lost_deals_reports_details",
+            "get_lost_deals_reports_graphic",
+            "get_noshow_deals_reports_summary",
+            "get_noshow_deals_reports_details",
+            "get_noshow_deals_reports_graphics",
+            "get_funnel_deals_reports_v2",
+            
+            // RPCs - UTMs
+            "get_utm_unique_counts",
+            "get_utms_v1",
+            "get_deals_by_utm_v1",
+            "get_deals_won_by_utm_v1",
+            "get_utm_deals_reports_summary",
+            
             // Table queries
             "list_users",
             "list_pipelines",
@@ -170,6 +203,7 @@ async function main() {
             "list_pipeline_deal_quotes",
             "list_pipeline_deal_quote_payments",
             "list_currencys",
+            
             // Utility
             "health_check",
             "get_capabilities",

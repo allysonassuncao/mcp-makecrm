@@ -748,3 +748,127 @@ export const ListCurrencysSchema = BaseSchema.extend({
     .default(true)
     .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
 });
+
+// ============================================================
+// NOVOS SCHEMAS (CONFORME IMPLEMENTATION PLAN)
+// ============================================================
+
+// --- 1. Contato ---
+export const GetContactFullContextSchema = BaseSchema.extend({
+  identifiers: z.array(z.string()).describe("Lista de identificadores, ex: telefones ou e-mails do contato"),
+});
+
+export const GetConversationAndUserDataSchema = BaseSchema.extend({
+  conversation_id: z.string().describe("ID da conversa"),
+});
+
+export const GetConversationsListSchema = BaseSchema.extend({
+  inbox_id: z.string().describe("ID da caixa de entrada"),
+  scope: z.enum(["minhas", "todas"]).describe("Escopo da busca ('minhas' ou 'todas')"),
+  limit: z.number().int().optional().describe("Limite de registros (padrão 20)"),
+  offset: z.number().int().optional().describe("Offset para paginação"),
+  search_term: z.string().optional().describe("Texto de busca"),
+  user_filters: z.array(z.string()).optional().describe("Filtros de usuário (UUIDs)"),
+  tag_filters: z.array(z.number()).optional().describe("Filtros de tag (IDs)"),
+  has_deals: z.boolean().optional().describe("Apenas conversas com negócios"),
+});
+
+export const GetInboxesUnreadCountsSchema = BaseSchema.extend({});
+
+export const GetContactsSchema = BaseSchema.extend({
+  page: z.number().int().describe("Página para paginação"),
+  limit: z.number().int().describe("Limite de registros por página"),
+  contact_id: z.string().optional().describe("ID do contato específico"),
+  name_identifier: z.string().optional().describe("Busca por nome ou identificador"),
+  method: z.number().int().optional().describe("ID do método de contato"),
+  created_at_start: z.string().optional().describe("Data inicial de criação (ISO 8601)"),
+  created_at_end: z.string().optional().describe("Data final de criação (ISO 8601)"),
+});
+
+// --- 2. Pipeline e Base de Oportunidades ---
+// Nota: Para page_v7, totals_v7 e export_pipeline_deals, reusaremos o GetPipelineDealsSearchV2Schema 
+// que já contém quase todos os filtros avançados.
+
+export const GetDealsEdgeFunctionSchema = BaseSchema.extend({
+  identifiers: z.array(z.string()).optional().describe("Identificadores do contato"),
+  contact_id: z.string().optional().describe("ID do contato"),
+});
+
+// --- 3. Base de Reuniões e Atividades ---
+export const GetPipelineMeetsFilteredSchema = BaseSchema.extend({
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
+  pipeline_id: z.string().uuid().optional(),
+  stage_id: z.string().uuid().optional(),
+});
+
+export const GetPipelineDealsMeetSearchSchema = BaseSchema.extend({
+  page: z.number().int().optional().default(1),
+  limit: z.number().int().optional().default(20),
+});
+
+export const GetInboxWebphoneCallsSchema = BaseSchema.extend({
+  page: z.number().int().optional().default(1),
+  limit: z.number().int().optional().default(20),
+});
+
+// --- 4. Relatórios ---
+export const GetConversationReportsSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const ReportsRevenueDetailsSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const GetMaviFAQSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const GetWonDealsReportsByUserSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const GetLostDealsReportsDetailsSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const GetNoshowDealsReportsDetailsSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const GetFunnelDealsReportsSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+// --- 5. Relatórios UTM ---
+export const GetUtmUniqueCountsSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+});
+
+export const GetUtmsSchema = BaseSchema.extend({
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
+});
+
+export const GetDealsByUtmSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+  utm_key: z.string().describe("Chave da UTM (ex: utm_source)"),
+  utm_value: z.string().describe("Valor da UTM"),
+});
+
+export const GetDealsWonByUtmSchema = BaseSchema.extend({
+  date_start: z.string().describe("Data de início (ISO)"),
+  date_end: z.string().describe("Data de fim (ISO)"),
+  utm_key: z.string().describe("Chave da UTM (ex: utm_source)"),
+  utm_value: z.string().describe("Valor da UTM"),
+});

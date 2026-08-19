@@ -765,9 +765,9 @@ export const GetConversationAndUserDataSchema = BaseSchema.extend({
 export const GetConversationsListSchema = BaseSchema.extend({
   inbox_id: z.string().describe("ID da caixa de entrada"),
   scope: z.enum(["minhas", "todas"]).describe("Escopo da busca ('minhas' ou 'todas')"),
-  limit: z.number().int().optional().describe("Limite de registros (padrão 20)"),
-  offset: z.number().int().optional().describe("Offset para paginação"),
   search_term: z.string().optional().describe("Texto de busca"),
+  limit: z.number().int().optional().describe("Limite de registros"),
+  offset: z.number().int().optional().describe("Offset para paginação"),
   user_filters: z.array(z.string()).optional().describe("Filtros de usuário (UUIDs)"),
   tag_filters: z.array(z.number()).optional().describe("Filtros de tag (IDs)"),
   has_deals: z.boolean().optional().describe("Apenas conversas com negócios"),
@@ -786,8 +786,7 @@ export const GetContactsSchema = BaseSchema.extend({
 });
 
 // --- 2. Pipeline e Base de Oportunidades ---
-// Nota: Para page_v7, totals_v7 e export_pipeline_deals, reusaremos o GetPipelineDealsSearchV2Schema 
-// que já contém quase todos os filtros avançados.
+// Nota: Para page_v7, totals_v7 e export_pipeline_deals, usamos o GetPipelineDealsSearchV2Schema.
 
 export const GetDealsEdgeFunctionSchema = BaseSchema.extend({
   identifiers: z.array(z.string()).optional().describe("Identificadores do contato"),
@@ -796,31 +795,40 @@ export const GetDealsEdgeFunctionSchema = BaseSchema.extend({
 
 // --- 3. Base de Reuniões e Atividades ---
 export const GetPipelineMeetsFilteredSchema = BaseSchema.extend({
-  date_start: z.string().optional().describe("Data de início (ISO)"),
-  date_end: z.string().optional().describe("Data de fim (ISO)"),
-  pipeline_id: z.string().uuid().optional(),
-  stage_id: z.string().uuid().optional(),
+  user_email: z.string().email().describe("Email do usuário para busca"),
+  date_start: z.string().describe("Data de início (ISO)"),
 });
 
 export const GetPipelineDealsMeetSearchSchema = BaseSchema.extend({
-  page: z.number().int().optional().default(1),
-  limit: z.number().int().optional().default(20),
+  page: z.number().int().describe("Página para paginação"),
+  limit: z.number().int().describe("Limite de registros"),
+  owner_meet: z.array(z.string()).optional().describe("Filtro por responsáveis pela reunião"),
+  attendees_meet: z.array(z.string()).optional().describe("Filtro por participantes"),
+  noshow_reason: z.array(z.string()).optional().describe("Filtro por motivo de no-show"),
+  // Plus some generic pipeline filters that can be passed
+  pipeline_id: z.array(z.string().uuid()).optional().describe("IDs dos funis"),
 });
 
 export const GetInboxWebphoneCallsSchema = BaseSchema.extend({
-  page: z.number().int().optional().default(1),
-  limit: z.number().int().optional().default(20),
+  page: z.number().int().describe("Página"),
+  limit: z.number().int().describe("Limite"),
+  inbox_id: z.string().optional().describe("Filtro por inbox_id"),
+  identifier: z.string().optional().describe("Identificador (telefone)"),
+  type: z.string().optional().describe("Tipo da chamada"),
+  date_start: z.string().optional().describe("Data inicial"),
+  date_end: z.string().optional().describe("Data final"),
 });
 
 // --- 4. Relatórios ---
 export const GetConversationReportsSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
+  inbox_id: z.string().optional().describe("Filtro por caixa de entrada"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });
 
 export const ReportsRevenueDetailsSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });
 
 export const GetMaviFAQSchema = BaseSchema.extend({
@@ -829,23 +837,41 @@ export const GetMaviFAQSchema = BaseSchema.extend({
 });
 
 export const GetWonDealsReportsByUserSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });
 
 export const GetLostDealsReportsDetailsSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });
 
 export const GetNoshowDealsReportsDetailsSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });
 
 export const GetFunnelDealsReportsSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
+  pipeline_id: z.string().uuid().describe("ID do Pipeline"),
+  stages_select: z.array(z.object({ id: z.string() })).optional().describe("Estágios selecionados"),
+  status: z.array(z.number()).optional().describe("Filtro de status"),
+  sdr_id: z.array(z.string()).optional(),
+  closer_id: z.array(z.string()).optional(),
+  source_id: z.array(z.string()).optional(),
+  campaign_id: z.array(z.string()).optional(),
+  products_id: z.array(z.string()).optional(),
+  value_min: z.number().optional(),
+  value_max: z.number().optional(),
+  created_at_start: z.string().optional(),
+  created_at_end: z.string().optional(),
+  utm_source: z.array(z.string()).optional(),
+  utm_medium: z.array(z.string()).optional(),
+  utm_campaign: z.array(z.string()).optional(),
+  utm_id: z.array(z.string()).optional(),
+  utm_term: z.array(z.string()).optional(),
+  utm_content: z.array(z.string()).optional(),
+  custom_field: z.array(z.any()).optional(),
+  inbox_id: z.array(z.string()).optional(),
 });
 
 // --- 5. Relatórios UTM ---
@@ -860,15 +886,13 @@ export const GetUtmsSchema = BaseSchema.extend({
 });
 
 export const GetDealsByUtmSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
-  utm_key: z.string().describe("Chave da UTM (ex: utm_source)"),
-  utm_value: z.string().describe("Valor da UTM"),
+  utm_name: z.string().describe("Nome da UTM (ex: utm_source=google)"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });
 
 export const GetDealsWonByUtmSchema = BaseSchema.extend({
-  date_start: z.string().describe("Data de início (ISO)"),
-  date_end: z.string().describe("Data de fim (ISO)"),
-  utm_key: z.string().describe("Chave da UTM (ex: utm_source)"),
-  utm_value: z.string().describe("Valor da UTM"),
+  utm_name: z.string().describe("Nome da UTM"),
+  date_start: z.string().optional().describe("Data de início (ISO)"),
+  date_end: z.string().optional().describe("Data de fim (ISO)"),
 });

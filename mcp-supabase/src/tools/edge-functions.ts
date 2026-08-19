@@ -27,7 +27,7 @@ function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, too
         });
         if (error) throw new Error(error.message);
         
-        logger.info(`✅ Sucesso na execução de ${toolName}`);
+        logger.info(`✅ Sucesso na execução de ${toolName}`, data);
         return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de ${toolName}`, error);
@@ -60,7 +60,7 @@ export function registerEdgeFunctionTools(server: McpServer, supabase: SupabaseC
 
         if (error) throw new Error(error.message);
         
-        logger.info(`✅ Sucesso na execução de example_edge_function`);
+        logger.info(`✅ Sucesso na execução de example_edge_function`, data);
         return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de example_edge_function`, error);

@@ -11,8 +11,6 @@ import {
   GetNoShowDealsGraphicSchema,
   GetPipelineDealsSearchV2Schema,
   GetContactFullContextSchema,
-  GetConversationAndUserDataSchema,
-  GetConversationsListSchema,
   GetInboxesUnreadCountsSchema,
   GetPipelineMeetsFilteredSchema,
   GetPipelineDealsMeetSearchSchema,
@@ -105,39 +103,15 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // ==========================================
   // MÓDULO 1: CONTATOS E CAIXA DE ENTRADA
   // ==========================================
-  
+
   createSimpleRpcTool(server, supabase, "get_contact_full_context_v2", "Busca o contexto proativo e completo de um contato", GetContactFullContextSchema);
-  createSimpleRpcTool(server, supabase, "get_conversation_and_user_data", "Valida a conversa e o usuário trazendo status da caixa de entrada", GetConversationAndUserDataSchema);
-  createSimpleRpcTool(server, supabase, "get_conversations_list_v3", "Lista paginada de conversas com suporte a buscas de texto e filtros", GetConversationsListSchema);
+  // createSimpleRpcTool(server, supabase, "get_conversation_and_user_data", "Valida a conversa e o usuário trazendo status da caixa de entrada", GetConversationAndUserDataSchema);
+  // createSimpleRpcTool(server, supabase, "get_conversations_list_v3", "Lista paginada de conversas com suporte a buscas de texto e filtros", GetConversationsListSchema);
   createSimpleRpcTool(server, supabase, "get_inboxes_unread_counts", "Retorna a volumetria de mensagens não lidas agrupada por caixa", GetInboxesUnreadCountsSchema);
 
   // ==========================================
   // MÓDULO 2: PIPELINE E OPORTUNIDADES
   // ==========================================
-
-  server.tool(
-    "get_pipeline_deals_search_v2",
-    "Busca avançada de negócios com múltiplos filtros e paginação (v2).",
-    GetPipelineDealsSearchV2Schema.shape,
-    async (params) => {
-      logger.info(`🚀 Executando tool: get_pipeline_deals_search_v2`, params);
-      const validation = validateBaseParams(params);
-      if (!validation.valid) {
-        logger.warn(`⚠️ Validação falhou para get_pipeline_deals_search_v2`, validation.error);
-        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
-      }
-      try {
-        const rpcArgs = mapPipelineSearchParams(params);
-        const { data, error } = await supabase.rpc("get_pipeline_deals_search_v2", rpcArgs);
-        if (error) throw new Error(error.message);
-        logger.info(`✅ Sucesso na execução de get_pipeline_deals_search_v2`);
-        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
-      } catch (error) {
-        logger.error(`❌ Erro na execução de get_pipeline_deals_search_v2`, error);
-        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
-      }
-    }
-  );
 
   server.tool(
     "get_pipeline_deals_page_v7",
@@ -190,34 +164,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     }
   );
 
-  server.tool(
-    "export_pipeline_deals",
-    "Gera carga linear de oportunidades para exportação.",
-    GetPipelineDealsSearchV2Schema.shape,
-    async (params) => {
-      logger.info(`🚀 Executando tool: export_pipeline_deals`, params);
-      const validation = validateBaseParams(params);
-      if (!validation.valid) {
-        logger.warn(`⚠️ Validação falhou para export_pipeline_deals`, validation.error);
-        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
-      }
-      try {
-        const rpcArgs = mapPipelineSearchParams(params);
-        const { data, error } = await supabase.rpc("export_pipeline_deals", rpcArgs);
-        if (error) throw new Error(error.message);
-        logger.info(`✅ Sucesso na execução de export_pipeline_deals`);
-        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
-      } catch (error) {
-        logger.error(`❌ Erro na execução de export_pipeline_deals`, error);
-        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
-      }
-    }
-  );
-
   // ==========================================
   // MÓDULO 3: REUNIÕES E ATIVIDADES
   // ==========================================
-  
+
   createSimpleRpcTool(server, supabase, "get_pipeline_meets_filtered", "Retorna reuniões filtradas vinculadas ao pipeline", GetPipelineMeetsFilteredSchema);
   createSimpleRpcTool(server, supabase, "get_pipeline_deals_meet_search_v1", "Traz base de reuniões consolidada com dados de negócios", GetPipelineDealsMeetSearchSchema);
   createSimpleRpcTool(server, supabase, "get_inbox_webphone_calls_v4", "Busca logs de ligações efetuadas/recebidas", GetInboxWebphoneCallsSchema);
@@ -228,12 +178,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
 
   createSimpleRpcTool(server, supabase, "get_conversation_repports", "Métricas de atendimentos (TMA, TME)", GetConversationReportsSchema);
   createSimpleRpcTool(server, supabase, "reports_revenue_details_v4", "Detalhamento financeiro da receita", ReportsRevenueDetailsSchema);
-  
+
   // Atualizado para v4
   createSimpleRpcTool(server, supabase, "get_won_deals_reports_summary_v4", "Retorna resumo de negócios ganhos v4", GetWonDealsSummarySchema);
-  
+
   createSimpleRpcTool(server, supabase, "get_won_deals_reports_by_user", "Ranking de vendedores/receita gerada", GetWonDealsReportsByUserSchema);
-  
+
   // O graphic_v3 já existia, registramos usando helper
   createSimpleRpcTool(server, supabase, "get_won_deals_reports_graphic_v3", "Dados de gráficos para negócios ganhos", GetWonDealsGraphicSchema);
 

@@ -21,6 +21,7 @@ function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, too
 
       try {
         const invokeArgs = paramMapper ? paramMapper(params) : params;
+        logger.info(`📡 Enviando para o Supabase (Edge Function ${edgeFunctionName || toolName}):`, invokeArgs);
         const { data, error } = await supabase.functions.invoke(edgeFunctionName || toolName, {
           body: invokeArgs,
         });
@@ -52,6 +53,7 @@ export function registerEdgeFunctionTools(server: McpServer, supabase: SupabaseC
       params = stripTimezones(params);
 
       try {
+        logger.info(`📡 Enviando para o Supabase (Edge Function example-function):`, params);
         const { data, error } = await supabase.functions.invoke("example-function", {
           body: params,
         });

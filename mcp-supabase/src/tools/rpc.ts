@@ -127,6 +127,7 @@ function createSimpleRpcTool(
 
       try {
         const rpcArgs = paramMapper ? paramMapper(params) : params;
+        logger.info(`📡 Enviando para o Supabase (RPC ${rpcName || toolName}):`, rpcArgs);
         const { data, error } = await supabase.rpc(rpcName || toolName, rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de ${toolName}`);
@@ -166,6 +167,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       params = stripTimezones(params);
       try {
         const rpcArgs = mapPipelineSearchParams(params);
+        logger.info(`📡 Enviando para o Supabase (RPC get_pipeline_deals_search_v2):`, rpcArgs);
         const { data, error } = await supabase.rpc("get_pipeline_deals_search_v2", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_pipeline_deals_search_v2`);
@@ -191,6 +193,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       params = stripTimezones(params);
       try {
         const rpcArgs = mapPipelineSearchParams(params);
+        logger.info(`📡 Enviando para o Supabase (RPC get_pipeline_deals_page_v7):`, rpcArgs);
         const { data, error } = await supabase.rpc("get_pipeline_deals_page_v7", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_pipeline_deals_page_v7`);
@@ -219,6 +222,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         // Exclui page/limit dos totais
         delete rpcArgs.p_page;
         delete rpcArgs.p_limit;
+        logger.info(`📡 Enviando para o Supabase (RPC get_pipeline_deals_totals_v7):`, rpcArgs);
         const { data, error } = await supabase.rpc("get_pipeline_deals_totals_v7", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_pipeline_deals_totals_v7`);
@@ -247,6 +251,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         rpcArgs.p_company_id = params.company_id;
         rpcArgs.p_user_id = params.user_id;
         delete rpcArgs.p_page; // não usa paginação page
+        logger.info(`📡 Enviando para o Supabase (RPC export_pipeline_deals):`, rpcArgs);
         const { data, error } = await supabase.rpc("export_pipeline_deals", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de export_pipeline_deals`);
@@ -369,6 +374,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
           }
         }
 
+        logger.info(`📡 Enviando para o Supabase (RPC get_utm_deals_reports_summary):`, rpcArgs);
         const { data, error } = await supabase.rpc("get_utm_deals_reports_summary", rpcArgs);
 
         if (error) throw new Error(error.message);

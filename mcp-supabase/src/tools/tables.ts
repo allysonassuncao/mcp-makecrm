@@ -31,7 +31,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_users`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -50,10 +50,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_users`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_users`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -70,7 +70,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_pipelines`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -88,10 +88,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_pipelines`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_pipelines`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -108,7 +108,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_sources`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -126,10 +126,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_sources`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_sources`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -146,7 +146,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_campaigns`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -164,10 +164,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_campaigns`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_campaigns`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -184,7 +184,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_roles`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -202,10 +202,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_roles`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_roles`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -222,7 +222,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_lost_reasons`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -240,10 +240,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_lost_reasons`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_lost_reasons`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -260,7 +260,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_noshow_reasons`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -278,10 +278,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_noshow_reasons`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_noshow_reasons`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -298,7 +298,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_pipeline_deal_meets`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -318,10 +318,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_pipeline_deal_meets`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_pipeline_deal_meets`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -338,7 +338,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_pipeline_deal_losts`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -356,10 +356,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_pipeline_deal_losts`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_pipeline_deal_losts`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -376,7 +376,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_pipeline_deal_meet_noshow`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -393,10 +393,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_pipeline_deal_meet_noshow`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_pipeline_deal_meet_noshow`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -414,7 +414,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_pipeline_deal_quotes`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -433,10 +433,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_pipeline_deal_quotes`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_pipeline_deal_quotes`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -453,7 +453,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_pipeline_deal_quote_payments`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -470,10 +470,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         if (error) throw new Error(error.message);
 
         logger.info(`✅ Sucesso na execução de list_pipeline_deal_quote_payments`);
-        return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de list_pipeline_deal_quote_payments`, error);
-        return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );
@@ -490,7 +490,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para list_currencys`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {

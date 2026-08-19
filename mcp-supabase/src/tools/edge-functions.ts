@@ -13,7 +13,7 @@ function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, too
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para ${toolName}`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -23,10 +23,10 @@ function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, too
         if (error) throw new Error(error.message);
         
         logger.info(`✅ Sucesso na execução de ${toolName}`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de ${toolName}`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );
@@ -42,7 +42,7 @@ export function registerEdgeFunctionTools(server: McpServer, supabase: SupabaseC
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para example_edge_function`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {

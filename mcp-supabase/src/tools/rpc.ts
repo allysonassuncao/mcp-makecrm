@@ -85,17 +85,17 @@ function createSimpleRpcTool(server: McpServer, supabase: SupabaseClient, toolNa
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para ${toolName}`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
         const { data, error } = await supabase.rpc(rpcName || toolName, params);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de ${toolName}`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de ${toolName}`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );
@@ -124,17 +124,17 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para get_pipeline_deals_search_v2`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         const { data, error } = await supabase.rpc("get_pipeline_deals_search_v2", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_pipeline_deals_search_v2`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de get_pipeline_deals_search_v2`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );
@@ -148,17 +148,17 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para get_pipeline_deals_page_v7`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         const { data, error } = await supabase.rpc("get_pipeline_deals_page_v7", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_pipeline_deals_page_v7`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de get_pipeline_deals_page_v7`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );
@@ -172,7 +172,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para get_pipeline_deals_totals_v7`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
       try {
         const rpcArgs = mapPipelineSearchParams(params);
@@ -182,10 +182,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         const { data, error } = await supabase.rpc("get_pipeline_deals_totals_v7", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_pipeline_deals_totals_v7`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de get_pipeline_deals_totals_v7`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );
@@ -199,17 +199,17 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para export_pipeline_deals`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         const { data, error } = await supabase.rpc("export_pipeline_deals", rpcArgs);
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de export_pipeline_deals`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de export_pipeline_deals`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );
@@ -268,7 +268,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       const validation = validateBaseParams(params);
       if (!validation.valid) {
         logger.warn(`⚠️ Validação falhou para get_utm_deals_reports_summary`, validation.error);
-        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
       try {
@@ -290,10 +290,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
 
         if (error) throw new Error(error.message);
         logger.info(`✅ Sucesso na execução de get_utm_deals_reports_summary`);
-        return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
+        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
         logger.error(`❌ Erro na execução de get_utm_deals_reports_summary`, error);
-        return { content: [{ type: "text", text: (error as Error).message }], isError: true };
+        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
       }
     }
   );

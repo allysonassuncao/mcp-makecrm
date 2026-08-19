@@ -15,6 +15,7 @@ import {
   ListPipelineDealQuotesSchema,
   ListPipelineDealQuotePaymentsSchema,
   ListCurrencysSchema,
+  ListProductsSchema,
 } from "../types/schemas.js";
 import { logger } from "../utils/logger.js";
 
@@ -422,7 +423,7 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         // pipeline_deal_quotes não possui company_id direto (apenas via deal_id)
         let query = supabase
           .from("pipeline_deal_quotes")
-          .select("id, deal_id, product_id, quoted_price, closed_price, user_id, created_at, updated_at, currency")
+          .select("id, deal_id, product_id, quoted_price, closed_price, user_id, created_at, updated_at, currency, description")
           .order(order_by, { ascending })
           .range(offset, offset + limit - 1);
 
@@ -509,6 +510,44 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
       } catch (error) {
         logger.error(`❌ Erro na execução de list_currencys`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
+      }
+    }
+  );
+
+  // ----------------------------------------------------------
+  // TOOL: list_products
+  // ----------------------------------------------------------
+  server.tool(
+    "list_products",
+    "Lista os produtos (public.products).",
+    ListProductsSchema.shape,
+    async (params) => {
+      logger.info(`🚀 Executando tool: list_products`, params);
+      const validation = validateBaseParams(params);
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_products`, validation.error);
+        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
+      }
+
+      try {
+        const { limit, offset, order_by, ascending, status_filter } = params;
+        let query = supabase
+          .from("products")
+          .select("id, name, price, company_id, status, currency")
+          .eq("company_id", params.company_id)
+          .order(order_by, { ascending })
+          .range(offset, offset + limit - 1);
+
+        if (status_filter !== undefined) query = query.eq("status", status_filter);
+
+        const { data, error } = await query;
+        if (error) throw new Error(error.message);
+
+        logger.info(`✅ Sucesso na execução de list_products`);
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: true, data }, null, 2) }] };
+      } catch (error) {
+        logger.error(`❌ Erro na execução de list_products`, error);
+        return { content: [{ type: "text" as const, text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
   );

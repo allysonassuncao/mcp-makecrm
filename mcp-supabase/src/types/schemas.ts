@@ -83,8 +83,13 @@ export const GetWonDealsSummarySchema = BaseSchema.extend({
     .datetime({ offset: true })
     .optional()
     .describe(
-      "Data de fim do filtro (ISO 8601 com timezone, ex: 2024-12-31T23:59:59-03:00). Opcional."
+      "Data de fim do filtro (ISO 8601 com timezone). Opcional."
     ),
+  filter_user_id: z
+    .string()
+    .uuid()
+    .optional()
+    .describe("UUID de um usuário específico para filtrar os dados. Opcional."),
 });
 
 // Tipo do retorno da RPC get_won_deals_reports_summary_v3
@@ -117,6 +122,7 @@ export const GetLostDealsSummarySchema = BaseSchema.extend({
     .describe(
       "Data de fim do filtro (ISO 8601 com timezone, ex: 2024-12-31T23:59:59-03:00). Opcional."
     ),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export interface LostDealsSummaryRow {
@@ -142,6 +148,7 @@ export const GetWonDealsGraphicSchema = BaseSchema.extend({
     .string()
     .describe("Data de fim do filtro (YYYY-MM-DD). Opcional.")
     .optional(),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export interface WonDealsGraphicRow {
@@ -163,6 +170,7 @@ export const GetLostDealsGraphicSchema = BaseSchema.extend({
     .string()
     .describe("Data de fim do filtro (ISO 8601 ou YYYY-MM-DD). Opcional.")
     .optional(),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export interface LostDealsGraphicRow {
@@ -184,6 +192,7 @@ export const GetNoShowDealsGraphicSchema = BaseSchema.extend({
     .string()
     .describe("Data de fim do filtro (ISO 8601 ou YYYY-MM-DD). Opcional.")
     .optional(),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export interface NoShowDealsGraphicRow {
@@ -685,6 +694,7 @@ export interface PipelineDealQuoteRow {
   created_at: string;
   updated_at: string | null;
   currency: number;
+  description: string | null;
 }
 
 export const ListPipelineDealQuotesSchema = BaseSchema.extend({
@@ -724,6 +734,32 @@ export const ListPipelineDealQuotePaymentsSchema = BaseSchema.extend({
     .default(false)
     .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
   quote_id: z.string().uuid().optional().describe("Filtrar por quote_id específico"),
+});
+
+// -------------------------------------------------------
+// TABLE: public.products
+// Colunas: id, name, price, company_id, status, currency
+// -------------------------------------------------------
+export interface ProductRow {
+  id: string;
+  name: string | null;
+  price: number | null;
+  company_id: string | null;
+  status: boolean | null;
+  currency: number;
+}
+
+export const ListProductsSchema = BaseSchema.extend({
+  ...PaginationSchema,
+  order_by: z
+    .enum(["name", "price"])
+    .default("name")
+    .describe("Campo para ordenação. Opções: name, price"),
+  ascending: z
+    .boolean()
+    .default(true)
+    .describe("Ordenar de forma crescente (true) ou decrescente (false)"),
+  status_filter: z.boolean().optional().describe("Filtrar por status (true para ativos, false para inativos)"),
 });
 
 // -------------------------------------------------------
@@ -795,26 +831,20 @@ export const GetPipelineDealsMeetSearchSchema = BaseSchema.extend({
   pipeline_id: z.array(z.string().uuid()).optional().describe("IDs dos funis"),
 });
 
-export const GetInboxWebphoneCallsSchema = BaseSchema.extend({
-  page: z.number().int().describe("Página"),
-  limit: z.number().int().describe("Limite"),
-  inbox_id: z.string().optional().describe("Filtro por inbox_id"),
-  identifier: z.string().optional().describe("Identificador (telefone)"),
-  type: z.string().optional().describe("Tipo da chamada"),
-  date_start: z.string().optional().describe("Data inicial"),
-  date_end: z.string().optional().describe("Data final"),
-});
+
 
 // --- 4. Relatórios ---
 export const GetConversationReportsSchema = BaseSchema.extend({
   inbox_id: z.string().optional().describe("Filtro por caixa de entrada"),
   date_start: z.string().optional().describe("Data de início (ISO)"),
   date_end: z.string().optional().describe("Data de fim (ISO)"),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export const ReportsRevenueDetailsSchema = BaseSchema.extend({
   date_start: z.string().optional().describe("Data de início (ISO)"),
   date_end: z.string().optional().describe("Data de fim (ISO)"),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export const GetMaviFAQSchema = BaseSchema.extend({
@@ -830,11 +860,13 @@ export const GetWonDealsReportsByUserSchema = BaseSchema.extend({
 export const GetLostDealsReportsDetailsSchema = BaseSchema.extend({
   date_start: z.string().optional().describe("Data de início (ISO)"),
   date_end: z.string().optional().describe("Data de fim (ISO)"),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export const GetNoshowDealsReportsDetailsSchema = BaseSchema.extend({
   date_start: z.string().optional().describe("Data de início (ISO)"),
   date_end: z.string().optional().describe("Data de fim (ISO)"),
+  filter_user_id: z.string().uuid().optional().describe("UUID de um usuário específico para filtro"),
 });
 
 export const GetFunnelDealsReportsSchema = BaseSchema.extend({

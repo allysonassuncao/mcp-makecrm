@@ -158,12 +158,10 @@ async function main() {
             // RPCs - Pipeline
             "get_pipeline_deals_page_v7",
             "get_pipeline_deals_totals_v7",
-            "export_pipeline_deals",
             
             // RPCs - Reuniões
             "get_pipeline_meets_filtered",
             "get_pipeline_deals_meet_search_v1",
-            "get_inbox_webphone_calls_v4",
             
             // RPCs - Relatórios
             "get_conversation_repports",
@@ -191,6 +189,7 @@ async function main() {
             "list_pipelines",
             "list_sources",
             "list_campaigns",
+            "list_products",
             "list_roles",
             "list_lost_reasons",
             "list_noshow_reasons",

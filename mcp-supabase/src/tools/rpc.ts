@@ -14,7 +14,6 @@ import {
   GetInboxesUnreadCountsSchema,
   GetPipelineMeetsFilteredSchema,
   GetPipelineDealsMeetSearchSchema,
-  GetInboxWebphoneCallsSchema,
   GetConversationReportsSchema,
   ReportsRevenueDetailsSchema,
   GetWonDealsReportsByUserSchema,
@@ -208,34 +207,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     }
   );
 
-  server.tool(
-    "export_pipeline_deals",
-    "Gera carga linear de oportunidades para exportação.",
-    GetPipelineDealsSearchV2Schema.shape,
-    async (params: any) => {
-      logger.info(`🚀 Executando tool: export_pipeline_deals`, params);
-      const validation = validateBaseParams(params);
-      if (!validation.valid) {
-        logger.warn(`⚠️ Validação falhou para export_pipeline_deals`, validation.error);
-        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
-      }
-      params = stripTimezones(params);
-      try {
-        const rpcArgs = mapPipelineSearchParams(params);
-        rpcArgs.p_company_id = params.company_id;
-        rpcArgs.p_user_id = params.user_id;
-        delete rpcArgs.p_page; // não usa paginação page
-        logger.info(`📡 Enviando para o Supabase (RPC export_pipeline_deals):`, rpcArgs);
-        const { data, error } = await supabase.rpc("export_pipeline_deals", rpcArgs);
-        if (error) throw new Error(error.message);
-        logger.info(`✅ Sucesso na execução de export_pipeline_deals`, data);
-        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
-      } catch (error) {
-        logger.error(`❌ Erro na execução de export_pipeline_deals`, error);
-        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
-      }
-    }
-  );
+
 
   // ==========================================
   // MÓDULO 3: REUNIÕES E ATIVIDADES
@@ -256,46 +228,55 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     return args;
   });
 
-  createSimpleRpcTool(server, supabase, "get_inbox_webphone_calls_v4", "Busca logs de ligações efetuadas/recebidas", GetInboxWebphoneCallsSchema, prefixP);
+
 
   // ==========================================
   // MÓDULO 4: RELATÓRIOS (WON, LOST, NOSHOW, ETC)
   // ==========================================
 
-  createSimpleRpcTool(server, supabase, "get_conversation_repports", "Métricas de atendimentos (TMA, TME)", GetConversationReportsSchema, prefixP);
+  createSimpleRpcTool(server, supabase, "get_conversation_repports", "Métricas de atendimentos (TMA, TME)", GetConversationReportsSchema, (p) => ({
+    p_company_id: p.company_id,
+    p_user_id: p.filter_user_id || null,
+    p_inbox_id: p.inbox_id,
+    p_date_start: p.date_start,
+    p_date_end: p.date_end
+  }));
   
   createSimpleRpcTool(server, supabase, "reports_revenue_details_v4", "Detalhamento financeiro da receita", ReportsRevenueDetailsSchema, (p) => ({
     in_company_id: p.company_id,
     in_date_start: p.date_start,
     in_date_end: p.date_end,
-    in_user_id: p.user_id,
+    in_user_id: p.filter_user_id || null,
   }));
   
-  createSimpleRpcTool(server, supabase, "get_won_deals_reports_summary_v4", "Retorna resumo de negócios ganhos v4", GetWonDealsSummarySchema); // mantem params normais
+  createSimpleRpcTool(server, supabase, "get_won_deals_reports_summary_v4", "Retorna resumo de negócios ganhos v4", GetWonDealsSummarySchema, (p) => ({
+    ...p,
+    user_id: p.filter_user_id || null
+  }));
   createSimpleRpcTool(server, supabase, "get_won_deals_reports_by_user", "Ranking de vendedores/receita gerada", GetWonDealsReportsByUserSchema); // mantem params normais
   
   // Gráficos usam start_date e end_date ao inves de date_start
   createSimpleRpcTool(server, supabase, "get_won_deals_reports_graphic_v3", "Dados de gráficos para negócios ganhos", GetWonDealsGraphicSchema, (p) => ({
     company_id: p.company_id,
-    user_id: p.user_id,
+    user_id: p.filter_user_id || null,
     start_date: p.date_start, // schema receives date_start, mapped to start_date
     end_date: p.date_end
   }));
 
-  createSimpleRpcTool(server, supabase, "get_lost_deals_reports_summary", "Resumo de relatórios de negócios perdidos", GetLostDealsSummarySchema);
-  createSimpleRpcTool(server, supabase, "get_lost_deals_reports_details", "Lista cada negócio perdido e motivo", GetLostDealsReportsDetailsSchema);
+  createSimpleRpcTool(server, supabase, "get_lost_deals_reports_summary", "Resumo de relatórios de negócios perdidos", GetLostDealsSummarySchema, (p) => ({ ...p, user_id: p.filter_user_id || null }));
+  createSimpleRpcTool(server, supabase, "get_lost_deals_reports_details", "Lista cada negócio perdido e motivo", GetLostDealsReportsDetailsSchema, (p) => ({ ...p, user_id: p.filter_user_id || null }));
   createSimpleRpcTool(server, supabase, "get_lost_deals_reports_graphic", "Gráficos de negócios perdidos", GetLostDealsGraphicSchema, (p) => ({
     company_id: p.company_id,
-    user_id: p.user_id,
+    user_id: p.filter_user_id || null,
     start_date: p.date_start,
     end_date: p.date_end
   }));
 
-  createSimpleRpcTool(server, supabase, "get_noshow_deals_reports_summary", "Resumo de no-shows", GetNoShowDealsSummarySchema);
-  createSimpleRpcTool(server, supabase, "get_noshow_deals_reports_details", "Lista cada no-show detalhado", GetNoshowDealsReportsDetailsSchema);
+  createSimpleRpcTool(server, supabase, "get_noshow_deals_reports_summary", "Resumo de no-shows", GetNoShowDealsSummarySchema, (p) => ({ ...p, user_id: p.filter_user_id || null }));
+  createSimpleRpcTool(server, supabase, "get_noshow_deals_reports_details", "Lista cada no-show detalhado", GetNoshowDealsReportsDetailsSchema, (p) => ({ ...p, user_id: p.filter_user_id || null }));
   createSimpleRpcTool(server, supabase, "get_noshow_deals_reports_graphics", "Gráficos de no-shows", GetNoShowDealsGraphicSchema, (p) => ({
     company_id: p.company_id,
-    user_id: p.user_id,
+    user_id: p.filter_user_id || null,
     start_date: p.date_start,
     end_date: p.date_end
   }));
@@ -311,7 +292,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     p_end_date: p.date_end
   })); // (assumindo param normais sem p_ para uniqueness ou o q quer q seja. n documentado, vou manter sem p_ pra n quebrar as padronizadas)
   createSimpleRpcTool(server, supabase, "get_utms_v1", "Lista valores UTM agrupados", GetUtmsSchema, (p) => {
-    const args: any = { p_company_id: p.company_id };
+    const args: any = {};
     if (p.date_start !== undefined) args.date_start = p.date_start;
     if (p.date_end !== undefined) args.date_end = p.date_end;
     return args;

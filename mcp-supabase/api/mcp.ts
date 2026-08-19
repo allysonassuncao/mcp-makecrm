@@ -1,3 +1,4 @@
+import { zodToJsonSchema } from "zod-to-json-schema";
 import { createMcpHandler } from "@vercel/mcp-adapter";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createDynamicSupabaseClient, getSupabaseClient } from "../src/supabase-client.js";
@@ -52,7 +53,7 @@ const handler = async (req: Request) => {
 
       if (body.method === "tools/list") {
         const tools = Object.entries((server as any)._registeredTools).map(([name, tool]: [string, any]) => ({
-          name, description: tool.description, inputSchema: tool.inputSchema,
+          name, description: tool.description, inputSchema: zodToJsonSchema(tool.inputSchema),
         }));
         return new Response(JSON.stringify({ jsonrpc: "2.0", result: { tools }, id: body.id }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }

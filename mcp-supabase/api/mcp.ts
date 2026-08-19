@@ -10,6 +10,9 @@ const handler = async (req: Request) => {
     "http://localhost:8080",
     "https://usermakecrm.com.br",
     "https://app.usermakecrm.com.br",
+    "https://allyson.com.br",
+    "https://makecrm-copilot.allyson.com.br",
+    "https://maso.app.br",
   ];
 
   const origin = req.headers.get("origin");
@@ -31,7 +34,7 @@ const handler = async (req: Request) => {
   const authHeader = req.headers.get("authorization");
 
   // Cria o cliente baseado no que recebeu (ou usa o padrão do .env se não vier nada)
-  const supabase = apiKey 
+  const supabase = apiKey
     ? createDynamicSupabaseClient(apiKey, authHeader || undefined)
     : getSupabaseClient();
 

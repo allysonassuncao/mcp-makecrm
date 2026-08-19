@@ -62,18 +62,20 @@ export function registerEdgeFunctionTools(server: McpServer, supabase: SupabaseC
     }
   );
 
-  // Helper genérico para prefixar p_
-  const prefixP = (params: any) => {
-    const rpcArgs: any = {};
-    for (const [key, val] of Object.entries(params)) {
-      if (val !== undefined && val !== null && val !== "") {
-        rpcArgs[`p_${key}`] = val;
-      }
-    }
-    return rpcArgs;
-  };
-
-  createEdgeFunctionTool(server, supabase, "getContacts", "Lista e filtra contatos processando via server-side", GetContactsSchema, prefixP);
-  createEdgeFunctionTool(server, supabase, "getDeals", "Recupera negócios do pipeline vinculados a um contato", GetDealsEdgeFunctionSchema, prefixP);
+  createEdgeFunctionTool(server, supabase, "getContacts", "Lista e filtra contatos processando via server-side", GetContactsSchema, (p) => {
+    const args: any = { p_page: p.page, p_limit: p.limit };
+    if (p.contact_id !== undefined) args.p_contact_id = p.contact_id;
+    if (p.name_identifier !== undefined) args.p_name_identifier = p.name_identifier;
+    if (p.method !== undefined) args.p_method = p.method;
+    if (p.created_at_start !== undefined) args.p_created_at_start = p.created_at_start;
+    if (p.created_at_end !== undefined) args.p_created_at_end = p.created_at_end;
+    return args;
+  });
+  createEdgeFunctionTool(server, supabase, "getDeals", "Recupera negócios do pipeline vinculados a um contato", GetDealsEdgeFunctionSchema, (p) => {
+    const args: any = {};
+    if (p.identifiers !== undefined) args.p_identifiers = p.identifiers;
+    if (p.contact_id !== undefined) args.p_contact_id = p.contact_id;
+    return args;
+  });
   createEdgeFunctionTool(server, supabase, "getMAVIFAQ", "Consolida respostas e logs da Inteligência Artificial Mavi", GetMaviFAQSchema);
 }

@@ -11,8 +11,6 @@ import {
   GetNoShowDealsGraphicSchema,
   GetPipelineDealsSearchV2Schema,
   GetContactFullContextSchema,
-  GetConversationAndUserDataSchema,
-  GetConversationsListSchema,
   GetInboxesUnreadCountsSchema,
   GetPipelineMeetsFilteredSchema,
   GetPipelineDealsMeetSearchSchema,
@@ -31,10 +29,7 @@ import {
 import { logger } from "../utils/logger.js";
 
 function mapPipelineSearchParams(params: any) {
-  const rpcArgs: any = {
-    p_company_id: params.company_id, // ensure company_id is mapped if required by some functions
-    company_id: params.company_id, // keep original as fallback
-  };
+  const rpcArgs: any = {};
   const mappings: Record<string, string> = {
     pipeline_id: "p_pipeline_id",
     name: "p_name",
@@ -147,8 +142,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // ==========================================
 
   createSimpleRpcTool(server, supabase, "get_contact_full_context_v2", "Busca o contexto proativo e completo de um contato", GetContactFullContextSchema, prefixP);
-  createSimpleRpcTool(server, supabase, "get_conversation_and_user_data", "Valida a conversa e o usuário trazendo status da caixa de entrada", GetConversationAndUserDataSchema, prefixP);
-  createSimpleRpcTool(server, supabase, "get_conversations_list_v3", "Lista paginada de conversas com suporte a buscas de texto e filtros", GetConversationsListSchema, prefixP);
+
   createSimpleRpcTool(server, supabase, "get_inboxes_unread_counts", "Retorna a volumetria de mensagens não lidas agrupada por caixa", GetInboxesUnreadCountsSchema, prefixP);
 
   // ==========================================
@@ -243,6 +237,8 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
       }
       try {
         const rpcArgs = mapPipelineSearchParams(params);
+        rpcArgs.p_company_id = params.company_id;
+        rpcArgs.p_user_id = params.user_id;
         delete rpcArgs.p_page; // não usa paginação page
         const { data, error } = await supabase.rpc("export_pipeline_deals", rpcArgs);
         if (error) throw new Error(error.message);
@@ -325,7 +321,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // ==========================================
 
   createSimpleRpcTool(server, supabase, "get_utm_unique_counts", "Contabiliza total de UTMs únicas", GetUtmUniqueCountsSchema); // (assumindo param normais sem p_ para uniqueness ou o q quer q seja. n documentado, vou manter sem p_ pra n quebrar as padronizadas)
-  createSimpleRpcTool(server, supabase, "get_utms_v1", "Lista valores UTM agrupados", GetUtmsSchema, prefixP);
+  createSimpleRpcTool(server, supabase, "get_utms_v1", "Lista valores UTM agrupados", GetUtmsSchema, (p) => {
+    const args: any = { p_company_id: p.company_id };
+    if (p.date_start !== undefined) args.date_start = p.date_start;
+    if (p.date_end !== undefined) args.date_end = p.date_end;
+    return args;
+  });
   createSimpleRpcTool(server, supabase, "get_deals_by_utm_v1", "Volumetria de leads gerados por UTM", GetDealsByUtmSchema); // Param exatos do doc
   createSimpleRpcTool(server, supabase, "get_deals_won_by_utm_v1", "Conversão de vendas e receita originada por UTM", GetDealsWonByUtmSchema); // Param exatos
 

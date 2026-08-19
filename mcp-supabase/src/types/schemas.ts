@@ -758,20 +758,6 @@ export const GetContactFullContextSchema = BaseSchema.extend({
   identifiers: z.array(z.string()).describe("Lista de identificadores, ex: telefones ou e-mails do contato"),
 });
 
-export const GetConversationAndUserDataSchema = BaseSchema.extend({
-  conversation_id: z.string().describe("ID da conversa"),
-});
-
-export const GetConversationsListSchema = BaseSchema.extend({
-  inbox_id: z.string().describe("ID da caixa de entrada"),
-  scope: z.enum(["minhas", "todas"]).describe("Escopo da busca ('minhas' ou 'todas')"),
-  search_term: z.string().optional().describe("Texto de busca"),
-  limit: z.number().int().optional().describe("Limite de registros"),
-  offset: z.number().int().optional().describe("Offset para paginação"),
-  user_filters: z.array(z.string()).optional().describe("Filtros de usuário (UUIDs)"),
-  tag_filters: z.array(z.number()).optional().describe("Filtros de tag (IDs)"),
-  has_deals: z.boolean().optional().describe("Apenas conversas com negócios"),
-});
 
 export const GetInboxesUnreadCountsSchema = BaseSchema.extend({});
 

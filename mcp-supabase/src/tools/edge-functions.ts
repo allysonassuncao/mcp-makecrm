@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { BaseSchema, validateBaseParams, GetContactsSchema, GetDealsEdgeFunctionSchema, GetMaviFAQSchema } from "../types/schemas.js";
 import { logger } from "../utils/logger.js";
+import { stripTimezones } from "../utils/formatters.js";
 
 function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, toolName: string, description: string, schema: any, paramMapper?: (params: any) => any, edgeFunctionName?: string) {
   server.tool(
@@ -15,6 +16,8 @@ function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, too
         logger.warn(`⚠️ Validação falhou para ${toolName}`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+
+      params = stripTimezones(params);
 
       try {
         const invokeArgs = paramMapper ? paramMapper(params) : params;
@@ -45,6 +48,8 @@ export function registerEdgeFunctionTools(server: McpServer, supabase: SupabaseC
         logger.warn(`⚠️ Validação falhou para example_edge_function`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+
+      params = stripTimezones(params);
 
       try {
         const { data, error } = await supabase.functions.invoke("example-function", {

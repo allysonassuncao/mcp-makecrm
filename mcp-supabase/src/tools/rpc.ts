@@ -27,6 +27,7 @@ import {
   GetDealsWonByUtmSchema
 } from "../types/schemas.js";
 import { logger } from "../utils/logger.js";
+import { stripTimezones } from "../utils/formatters.js";
 
 function mapPipelineSearchParams(params: any) {
   const rpcArgs: any = {};
@@ -122,6 +123,8 @@ function createSimpleRpcTool(
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
 
+      params = stripTimezones(params);
+
       try {
         const rpcArgs = paramMapper ? paramMapper(params) : params;
         const { data, error } = await supabase.rpc(rpcName || toolName, rpcArgs);
@@ -160,6 +163,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         logger.warn(`⚠️ Validação falhou para get_pipeline_deals_search_v2`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+      params = stripTimezones(params);
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         const { data, error } = await supabase.rpc("get_pipeline_deals_search_v2", rpcArgs);
@@ -184,6 +188,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         logger.warn(`⚠️ Validação falhou para get_pipeline_deals_page_v7`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+      params = stripTimezones(params);
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         const { data, error } = await supabase.rpc("get_pipeline_deals_page_v7", rpcArgs);
@@ -208,6 +213,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         logger.warn(`⚠️ Validação falhou para get_pipeline_deals_totals_v7`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+      params = stripTimezones(params);
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         // Exclui page/limit dos totais
@@ -235,6 +241,7 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         logger.warn(`⚠️ Validação falhou para export_pipeline_deals`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+      params = stripTimezones(params);
       try {
         const rpcArgs = mapPipelineSearchParams(params);
         rpcArgs.p_company_id = params.company_id;
@@ -344,6 +351,8 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         logger.warn(`⚠️ Validação falhou para get_utm_deals_reports_summary`, validation.error);
         return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
       }
+
+      params = stripTimezones(params);
 
       try {
         const rpcArgs: any = {

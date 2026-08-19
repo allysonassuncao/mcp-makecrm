@@ -80,7 +80,7 @@ function createSimpleRpcTool(server: McpServer, supabase: SupabaseClient, toolNa
     toolName,
     description,
     schema.shape,
-    async (params) => {
+    async (params: any) => {
       logger.info(`🚀 Executando tool: ${toolName}`, params);
       const validation = validateBaseParams(params);
       if (!validation.valid) {

@@ -8,7 +8,7 @@ function createEdgeFunctionTool(server: McpServer, supabase: SupabaseClient, too
     toolName,
     description,
     schema.shape,
-    async (params) => {
+    async (params: any) => {
       logger.info(`🚀 Executando edge function: ${toolName}`, params);
       const validation = validateBaseParams(params);
       if (!validation.valid) {

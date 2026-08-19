@@ -153,12 +153,9 @@ async function main() {
             
             // RPCs - Contatos
             "get_contact_full_context_v2",
-            "get_conversation_and_user_data",
-            "get_conversations_list_v3",
             "get_inboxes_unread_counts",
             
             // RPCs - Pipeline
-            "get_pipeline_deals_search_v2",
             "get_pipeline_deals_page_v7",
             "get_pipeline_deals_totals_v7",
             "export_pipeline_deals",

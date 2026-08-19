@@ -154,32 +154,6 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // ==========================================
 
   server.tool(
-    "get_pipeline_deals_search_v2",
-    "Busca avançada de negócios com múltiplos filtros e paginação (v2).",
-    GetPipelineDealsSearchV2Schema.shape,
-    async (params: any) => {
-      logger.info(`🚀 Executando tool: get_pipeline_deals_search_v2`, params);
-      const validation = validateBaseParams(params);
-      if (!validation.valid) {
-        logger.warn(`⚠️ Validação falhou para get_pipeline_deals_search_v2`, validation.error);
-        return { content: [{ type: "text" as const, text: JSON.stringify(validation.error) }], isError: true };
-      }
-      params = stripTimezones(params);
-      try {
-        const rpcArgs = mapPipelineSearchParams(params);
-        logger.info(`📡 Enviando para o Supabase (RPC get_pipeline_deals_search_v2):`, rpcArgs);
-        const { data, error } = await supabase.rpc("get_pipeline_deals_search_v2", rpcArgs);
-        if (error) throw new Error(error.message);
-        logger.info(`✅ Sucesso na execução de get_pipeline_deals_search_v2`, data);
-        return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
-      } catch (error) {
-        logger.error(`❌ Erro na execução de get_pipeline_deals_search_v2`, error);
-        return { content: [{ type: "text" as const, text: (error as Error).message }], isError: true };
-      }
-    }
-  );
-
-  server.tool(
     "get_pipeline_deals_page_v7",
     "Busca as oportunidades com paginação e vasta gama de filtros (v7).",
     GetPipelineDealsSearchV2Schema.shape,
@@ -332,14 +306,23 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // MÓDULO 5: UTMs
   // ==========================================
 
-  createSimpleRpcTool(server, supabase, "get_utm_unique_counts", "Contabiliza total de UTMs únicas", GetUtmUniqueCountsSchema); // (assumindo param normais sem p_ para uniqueness ou o q quer q seja. n documentado, vou manter sem p_ pra n quebrar as padronizadas)
+  createSimpleRpcTool(server, supabase, "get_utm_unique_counts", "Contabiliza total de UTMs únicas", GetUtmUniqueCountsSchema, (p) => ({
+    p_start_date: p.date_start,
+    p_end_date: p.date_end
+  })); // (assumindo param normais sem p_ para uniqueness ou o q quer q seja. n documentado, vou manter sem p_ pra n quebrar as padronizadas)
   createSimpleRpcTool(server, supabase, "get_utms_v1", "Lista valores UTM agrupados", GetUtmsSchema, (p) => {
     const args: any = { p_company_id: p.company_id };
     if (p.date_start !== undefined) args.date_start = p.date_start;
     if (p.date_end !== undefined) args.date_end = p.date_end;
     return args;
   });
-  createSimpleRpcTool(server, supabase, "get_deals_by_utm_v1", "Volumetria de leads gerados por UTM", GetDealsByUtmSchema); // Param exatos do doc
+  createSimpleRpcTool(server, supabase, "get_deals_by_utm_v1", "Volumetria de leads gerados por UTM", GetDealsByUtmSchema, (p) => {
+    const args: any = { date_start: p.date_start, date_end: p.date_end };
+    if (p.utm_campaign) args.utm_campaign = p.utm_campaign;
+    if (p.utm_content) args.utm_content = p.utm_content;
+    if (p.utm_term) args.utm_term = p.utm_term;
+    return args;
+  });
   createSimpleRpcTool(server, supabase, "get_deals_won_by_utm_v1", "Conversão de vendas e receita originada por UTM", GetDealsWonByUtmSchema); // Param exatos
 
   // ----------------------------------------------------------

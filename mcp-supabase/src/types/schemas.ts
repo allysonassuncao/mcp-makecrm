@@ -243,7 +243,7 @@ export interface UtmDealsSummaryRow {
 }
 
 // -------------------------------------------------------
-// RPC: public.get_pipeline_deals_search_v2
+// Utilizado por funções de pipeline (page, totals, exports)
 // Busca avançada de negócios com múltiplos filtros e paginação.
 // -------------------------------------------------------
 export const GetPipelineDealsSearchV2Schema = BaseSchema.extend({

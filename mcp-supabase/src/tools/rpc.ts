@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { validateBaseParams, GetWonDealsSummarySchema, GetWonDealsGraphicSchema, GetLostDealsSummarySchema, GetLostDealsGraphicSchema, GetUtmDealsSummarySchema, GetNoShowDealsSummarySchema, GetNoShowDealsGraphicSchema, GetPipelineDealsSearchV2Schema } from "../types/schemas.js";
+import { logger } from "../utils/logger.js";
 
 export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
   // ----------------------------------------------------------
@@ -11,8 +12,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Busca avançada de negócios com múltiplos filtros e paginação.",
     GetPipelineDealsSearchV2Schema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_pipeline_deals_search_v2`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_pipeline_deals_search_v2`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const rpcArgs: any = {};
@@ -59,8 +64,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         const { data, error } = await supabase.rpc("get_pipeline_deals_search_v2", rpcArgs);
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_pipeline_deals_search_v2`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_pipeline_deals_search_v2`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -74,8 +81,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna um resumo de relatórios de negócios ganhos.",
     GetWonDealsSummarySchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_won_deals_reports_summary`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_won_deals_reports_summary`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { data, error } = await supabase.rpc("get_won_deals_reports_summary_v3", {
@@ -86,8 +97,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         });
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_won_deals_reports_summary`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_won_deals_reports_summary`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -101,8 +114,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna um resumo de relatórios de negócios perdidos.",
     GetLostDealsSummarySchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_lost_deals_reports_summary`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_lost_deals_reports_summary`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { data, error } = await supabase.rpc("get_lost_deals_reports_summary", {
@@ -113,8 +130,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         });
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_lost_deals_reports_summary`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_lost_deals_reports_summary`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -128,8 +147,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna um resumo de relatórios de no-shows (faltas em reuniões).",
     GetNoShowDealsSummarySchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_noshow_deals_reports_summary`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_noshow_deals_reports_summary`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { data, error } = await supabase.rpc("get_noshow_deals_reports_summary", {
@@ -140,8 +163,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         });
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_noshow_deals_reports_summary`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_noshow_deals_reports_summary`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -155,8 +180,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna dados consolidados para gráficos de negócios ganhos (Fontes, Campanhas e Produtos).",
     GetWonDealsGraphicSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_won_deals_reports_graphic`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_won_deals_reports_graphic`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { data, error } = await supabase.rpc("get_won_deals_reports_graphic_v3", {
@@ -167,8 +196,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         });
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_won_deals_reports_graphic`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_won_deals_reports_graphic`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -182,8 +213,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna dados consolidados para gráficos de negócios perdidos (Fontes, Campanhas e Motivos).",
     GetLostDealsGraphicSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_lost_deals_reports_graphic`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_lost_deals_reports_graphic`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { data, error } = await supabase.rpc("get_lost_deals_reports_graphic", {
@@ -194,8 +229,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         });
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_lost_deals_reports_graphic`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_lost_deals_reports_graphic`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -209,8 +246,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna dados consolidados para gráficos de no-shows (Fontes, Campanhas e Motivos).",
     GetNoShowDealsGraphicSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_noshow_deals_reports_graphics`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_noshow_deals_reports_graphics`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { data, error } = await supabase.rpc("get_noshow_deals_reports_graphics", {
@@ -221,8 +262,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         });
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_noshow_deals_reports_graphics`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_noshow_deals_reports_graphics`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }
@@ -236,8 +279,12 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
     "Retorna o histórico de UTMs capturados nos negócios.",
     GetUtmDealsSummarySchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: get_utm_deals_reports_summary`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para get_utm_deals_reports_summary`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const rpcArgs: any = {
@@ -269,8 +316,10 @@ export function registerRpcTools(server: McpServer, supabase: SupabaseClient) {
         const { data, error } = await supabase.rpc("get_utm_deals_reports_summary", rpcArgs);
 
         if (error) throw new Error(error.message);
+        logger.info(`✅ Sucesso na execução de get_utm_deals_reports_summary`);
         return { content: [{ type: "text", text: JSON.stringify(data, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de get_utm_deals_reports_summary`, error);
         return { content: [{ type: "text", text: (error as Error).message }], isError: true };
       }
     }

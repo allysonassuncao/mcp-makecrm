@@ -16,6 +16,7 @@ import {
   ListPipelineDealQuotePaymentsSchema,
   ListCurrencysSchema,
 } from "../types/schemas.js";
+import { logger } from "../utils/logger.js";
 
 export function registerTableTools(server: McpServer, supabase: SupabaseClient) {
   // ----------------------------------------------------------
@@ -26,8 +27,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os usuários da empresa (public.users).",
     ListUsersSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_users`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_users`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter, is_ia } = params;
@@ -44,8 +49,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_users`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_users`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -59,8 +66,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os pipelines da empresa (public.pipelines).",
     ListPipelinesSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_pipelines`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_pipelines`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter } = params;
@@ -76,8 +87,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_pipelines`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_pipelines`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -91,8 +104,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista as origens de leads (public.sources).",
     ListSourcesSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_sources`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_sources`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter } = params;
@@ -108,8 +125,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_sources`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_sources`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -123,8 +142,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista as campanhas (public.campaigns).",
     ListCampaignsSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_campaigns`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_campaigns`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter } = params;
@@ -140,8 +163,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_campaigns`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_campaigns`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -155,8 +180,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os papéis (public.roles).",
     ListRolesSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_roles`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_roles`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter } = params;
@@ -172,8 +201,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_roles`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_roles`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -187,8 +218,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os motivos de perda (public.lost_reasons).",
     ListLostReasonsSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_lost_reasons`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_lost_reasons`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter } = params;
@@ -204,8 +239,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_lost_reasons`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_lost_reasons`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -219,8 +256,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os motivos de no-show (public.noshow_reasons).",
     ListNoshowReasonsSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_noshow_reasons`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_noshow_reasons`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter } = params;
@@ -236,8 +277,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_noshow_reasons`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_noshow_reasons`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -251,8 +294,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os agendamentos (public.pipeline_deal_meets).",
     ListPipelineDealMeetsSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_pipeline_deal_meets`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_pipeline_deal_meets`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, status_filter, deal_id, user_id_filter } = params;
@@ -270,8 +317,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_pipeline_deal_meets`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_pipeline_deal_meets`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -285,8 +334,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os negócios perdidos (public.pipeline_deal_losts).",
     ListPipelineDealLostsSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_pipeline_deal_losts`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_pipeline_deal_losts`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, deal_id, reason_id } = params;
@@ -302,8 +355,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_pipeline_deal_losts`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_pipeline_deal_losts`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -317,8 +372,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os no-shows de agendamentos (public.pipeline_deal_meet_noshow).",
     ListPipelineDealMeetNoshowSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_pipeline_deal_meet_noshow`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_pipeline_deal_meet_noshow`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, meet_id } = params;
@@ -333,8 +392,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_pipeline_deal_meet_noshow`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_pipeline_deal_meet_noshow`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -349,8 +410,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista as cotações dos negócios (public.pipeline_deal_quotes).",
     ListPipelineDealQuotesSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_pipeline_deal_quotes`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_pipeline_deal_quotes`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, deal_id, user_id_filter } = params;
@@ -367,8 +432,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_pipeline_deal_quotes`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_pipeline_deal_quotes`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -382,8 +449,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista os pagamentos das cotações (public.pipeline_deal_quote_payments).",
     ListPipelineDealQuotePaymentsSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_pipeline_deal_quote_payments`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_pipeline_deal_quote_payments`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending, quote_id } = params;
@@ -398,8 +469,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_pipeline_deal_quote_payments`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_pipeline_deal_quote_payments`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }
@@ -413,8 +486,12 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
     "Lista as moedas (public.currencys).",
     ListCurrencysSchema.shape,
     async (params) => {
+      logger.info(`🚀 Executando tool: list_currencys`, params);
       const validation = validateBaseParams(params);
-      if (!validation.valid) return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      if (!validation.valid) {
+        logger.warn(`⚠️ Validação falhou para list_currencys`, validation.error);
+        return { content: [{ type: "text", text: JSON.stringify(validation.error) }], isError: true };
+      }
 
       try {
         const { limit, offset, order_by, ascending } = params;
@@ -427,8 +504,10 @@ export function registerTableTools(server: McpServer, supabase: SupabaseClient) 
         const { data, error } = await query;
         if (error) throw new Error(error.message);
 
+        logger.info(`✅ Sucesso na execução de list_currencys`);
         return { content: [{ type: "text", text: JSON.stringify({ success: true, data }, null, 2) }] };
       } catch (error) {
+        logger.error(`❌ Erro na execução de list_currencys`, error);
         return { content: [{ type: "text", text: JSON.stringify({ success: false, error: (error as Error).message }) }], isError: true };
       }
     }

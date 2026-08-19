@@ -5,6 +5,7 @@ import { createDynamicSupabaseClient, getSupabaseClient } from "../src/supabase-
 import { registerEdgeFunctionTools } from "../src/tools/edge-functions.js";
 import { registerRpcTools } from "../src/tools/rpc.js";
 import { registerTableTools } from "../src/tools/tables.js";
+import { logger } from "../src/utils/logger.js";
 
 const handler = async (req: Request) => {
   const allowedOrigins = [
@@ -45,6 +46,8 @@ const handler = async (req: Request) => {
   if (req.method === "POST" && !acceptHeader.includes("text/event-stream")) {
     try {
       const body = await req.json();
+      logger.info(`📥 [HTTP POST] Nova requisição MCP: ${body.method}`, body.params?.name ? { tool: body.params.name } : undefined);
+      
       const server = new McpServer({ name: "supabase-mcp", version: "1.0.0" });
 
       registerEdgeFunctionTools(server, supabase);
@@ -74,6 +77,7 @@ const handler = async (req: Request) => {
 
       throw new Error(`Método ${body.method} não suportado.`);
     } catch (error) {
+      logger.error(`❌ [HTTP POST] Erro interno:`, error);
       return new Response(JSON.stringify({
         jsonrpc: "2.0",
         error: { code: -32000, message: error instanceof Error ? error.message : "Erro" },
@@ -83,6 +87,7 @@ const handler = async (req: Request) => {
   }
 
   // 3. Fluxo SSE (Claude)
+  logger.info(`🌐 [HTTP SSE] Nova conexão estabelecida`, { origin: corsOrigin });
   return createMcpHandler(
     (server) => {
       registerEdgeFunctionTools(server, supabase);

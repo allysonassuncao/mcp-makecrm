@@ -10,26 +10,24 @@ import { getSupabaseClient } from "./src/supabase-client.js";
 import { registerEdgeFunctionTools } from "./src/tools/edge-functions.js";
 import { registerRpcTools } from "./src/tools/rpc.js";
 import { registerTableTools } from "./src/tools/tables.js";
+import { logger } from "./src/utils/logger.js";
 
 async function main() {
   try {
-    console.error("🚀 Iniciando Supabase MCP Server...");
-    console.error("📋 Checando variáveis de ambiente:");
-    console.error(`   NODE_VERSION: ${process.version}`);
-    console.error(
-      `   SUPABASE_URL: ${process.env.SUPABASE_URL ? "✅ Presente" : "❌ Ausente"}`
-    );
-    console.error(
-      `   SUPABASE_SERVICE_ROLE_KEY: ${process.env.SUPABASE_SERVICE_ROLE_KEY ? "✅ Presente" : "❌ Ausente"}`
-    );
+    logger.info("🚀 Iniciando Supabase MCP Server...");
+    logger.info("📋 Checando variáveis de ambiente:", {
+      NODE_VERSION: process.version,
+      SUPABASE_URL: process.env.SUPABASE_URL ? "✅ Presente" : "❌ Ausente",
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? "✅ Presente" : "❌ Ausente"
+    });
 
     // Valida a conexão com o Supabase ao iniciar
-    console.error("🔐 Inicializando cliente Supabase...");
+    logger.info("🔐 Inicializando cliente Supabase...");
     const supabase = getSupabaseClient();
-    console.error("✅ Cliente Supabase criado com sucesso");
+    logger.info("✅ Cliente Supabase criado com sucesso");
 
     // Testa a conexão com o Supabase
-    console.error("🔍 Testando conexão com o Supabase...");
+    logger.info("🔍 Testando conexão com o Supabase...");
     const { error: pingError } = await supabase
       .from("_mcp_health_check_nonexistent")
       .select("*")
@@ -38,34 +36,34 @@ async function main() {
 
     // Esperamos um erro 42P01 (tabela não existe) — isso confirma que a conexão funciona
     if (pingError && pingError.code !== "42P01" && pingError.code !== "PGRST116") {
-      console.error(
+      logger.warn(
         `⚠️  Aviso na verificação de conexão (código ${pingError.code}): ${pingError.message}`
       );
-      console.error(
+      logger.warn(
         "💡 Se o código for 42P01 ou PGRST116, a conexão está funcionando corretamente."
       );
     } else {
-      console.error("✅ Conexão com o Supabase verificada com sucesso");
+      logger.info("✅ Conexão com o Supabase verificada com sucesso");
     }
 
     // Inicializa o servidor MCP
-    console.error("🔧 Inicializando servidor MCP...");
+    logger.info("🔧 Inicializando servidor MCP...");
     const server = new McpServer({
       name: process.env.MCP_SERVER_NAME || "Supabase MCP Server",
       version: process.env.MCP_SERVER_VERSION || "1.0.0",
     });
-    console.error("✅ Instância do servidor MCP criada");
+    logger.info("✅ Instância do servidor MCP criada");
 
     // Registra todos os tools
-    console.error("🛠️  Registrando tools...");
-    const supabase = getSupabaseClient();
+    logger.info("🛠️  Registrando tools...");
+    const supabaseClient = getSupabaseClient();
     
-    registerEdgeFunctionTools(server, supabase);
-    console.error("   ✅ Edge Function tools registradas");
-    registerRpcTools(server, supabase);
-    console.error("   ✅ RPC tools registradas");
-    registerTableTools(server, supabase);
-    console.error("   ✅ Table query tools registradas");
+    registerEdgeFunctionTools(server, supabaseClient);
+    logger.info("   ✅ Edge Function tools registradas");
+    registerRpcTools(server, supabaseClient);
+    logger.info("   ✅ RPC tools registradas");
+    registerTableTools(server, supabaseClient);
+    logger.info("   ✅ Table query tools registradas");
 
     // Tool de health check
     server.tool(
@@ -196,42 +194,42 @@ async function main() {
       }
     );
 
-    console.error("🔗 Conectando ao transporte MCP...");
+    logger.info("🔗 Conectando ao transporte MCP...");
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error("✅ Conexão com o transporte estabelecida");
+    logger.info("✅ Conexão com o transporte estabelecida");
 
-    console.error("✅ Supabase MCP Server iniciado com sucesso");
-    console.error("🎯 Aguardando requisições dos clientes MCP...");
+    logger.info("✅ Supabase MCP Server iniciado com sucesso");
+    logger.info("🎯 Aguardando requisições dos clientes MCP...");
   } catch (error) {
-    console.error("❌ Falha ao iniciar o Supabase MCP Server:", error);
+    logger.error("❌ Falha ao iniciar o Supabase MCP Server", error);
     process.exit(1);
   }
 }
 
 // Graceful shutdown
 process.on("SIGINT", () => {
-  console.error("Recebido SIGINT, encerrando servidor...");
+  logger.info("Recebido SIGINT, encerrando servidor...");
   process.exit(0);
 });
 
 process.on("SIGTERM", () => {
-  console.error("Recebido SIGTERM, encerrando servidor...");
+  logger.info("Recebido SIGTERM, encerrando servidor...");
   process.exit(0);
 });
 
 process.on("uncaughtException", (error) => {
-  console.error("Exceção não capturada:", error);
+  logger.error("Exceção não capturada", error);
   process.exit(1);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Rejeição não tratada em:", promise, "razão:", reason);
+  logger.error("Rejeição não tratada em promise", { promise, reason });
   process.exit(1);
 });
 
 // Inicia o servidor
 main().catch((error) => {
-  console.error("Falha ao iniciar o servidor:", error);
+  logger.error("Falha ao iniciar o servidor", error);
   process.exit(1);
 });
